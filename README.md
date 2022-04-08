@@ -5,9 +5,9 @@ author: Ilya Tegmark
 discussions-to: https://github.com/ilyategmark/structuredNFT/discussions/
 type: Standards
 category: Improvement Proposal
-status: Work in progress
+status: Request for contributions
 created: 2022-04-08
-version: 0.1.1
+version: 0.1.2
 ---
 
 ## Executive Summary
@@ -21,7 +21,7 @@ Such higher-level NFT, which sole purpose is to hold ownership of other NFTs is 
 
 ## Rationale
 
-Structured ownership of non-fungible tokens is a logical next step in evolution of NFTs. Legal entities, real estate properties, complex projects, SPVs (special purpose vehicles) and other cases require that assets could be composed of many components and could belong to several entities in various proportions. This standard extends existing NFT standard to account for such use cases. 
+Structured ownership of non-fungible tokens is a logical next step in evolution of NFTs. Legal entities, big assets, real estate properties, complex projects, SPVs (special purpose vehicles) and other cases require that owned property could be composed of many components and could belong to several entities in various proportions. This standard extends existing NFT standard to account for such use cases and compatible with any NFT on any blockchain.
 
 ## Principles
 
@@ -40,7 +40,7 @@ In this paper we follow this legend:
 ### Principle 2
 > In contrast to **Plain NFTs**, the **Structured NFTs** can contain other NFTs. Here's the table of all possible and impossible states:
 
-| Owner | Owned property | Valid case? |Comment|
+| Owner | Owned property | Possible state? |Comment|
 |---|---|---|---|
 |User|pNFT|True|Standard use case: User fully owns Plain NFT|
 |User|sNFT|True|User fully owns Structured NFT|
@@ -56,15 +56,19 @@ The examples of this principle:
     
     // NFT A fully belongs to sNFT X
     assert ( ownerOf(A) == X )
+    assert ( ownersOf(A) == {X: 100%} )
 
     // sNFT X fully owns NFTs A and B
-    assert ( ownedBy(X) == {A, B} )
+    assert ( ownedBy(X) == {A: 100%, B: 100%} )
     assert ( ownerOf(B) == X )
+    assert ( ownersOf(B) == {X: 100%} )
 
     // User U fully owns NFTs C and D
-    assert ( ownedBy(U) == {C, D} )
+    assert ( ownedBy(U) == {C: 100%, D: 100%} )
     assert ( ownerOf(C) == U )
+    assert ( ownersOf(C) == {U: 100%} )
     assert ( ownerOf(D) == U )
+    assert ( ownersOf(D) == {U: 100%} )
 
 
 ### Principle 3
@@ -73,7 +77,7 @@ The examples of this principle:
 Here's an example of code:
 
     // Price of sNFT X is the sum of prices of its elements A and Y
-    assert ( ownedBy(X) == {A, Y} )
+    assert ( ownedBy(X) == {A: 100%, Y: 100%} )
     assert ( priceOf(X) == priceOf(A) + priceOf(Y) )
 
 ### Principle 4
@@ -81,7 +85,7 @@ Here's an example of code:
 
 Here's the table of all possible and impossible states updated for this principle:
 
-| Owner | Owned property | Valid case? |Comment|
+| Owner | Owned property | Possible state? |Comment|
 |---|---|---|---|
 |User|k% share of pNFT|True|User owns k% share of Plain NFT|
 |User|k% share of sNFT|True|User owns k% share of Structured NFT|
@@ -122,23 +126,16 @@ For example:
 
 ## Abstract
 
-The following standard allows for the implementation of a standard API for NFTs within smart contracts. This standard provides basic functionality to track and transfer NFTs.
+The following standard allows for the implementation of a standard API for Plain and Structured NFTs within smart contracts. Its derived from https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md. 
 
-We considered use cases of NFTs being owned and transacted by individuals as well as consignment to third party brokers/wallets/auctioneers ("operators"). NFTs can represent ownership over digital or physical assets. We considered a diverse universe of assets, and we know you will dream up many more:
+This standard provides basic functionality to track and transfer Plain and Structured NFTs accounting for partial ownership.
 
-- Physical property — houses, unique artwork
-- Virtual collectables — unique pictures of kittens, collectable cards
-- "Negative value" assets — loans, burdens and other responsibilities
+We considered use cases of NFTs being owned and transacted by individuals or entities. NFTs can represent ownership over digital or physical assets:
 
-In general, all houses are distinct and no two kittens are alike. NFTs are *distinguishable* and you must track the ownership of each one separately.
+- Physical property — land, real estate
+- Digital property — licenses
+- Legal entities — companies, decentralised organizations, special purpose vehicles
 
-## Motivation
-
-A standard interface allows wallet/broker/auction applications to work with any NFT on Ethereum. We provide for simple ERC-721 smart contracts as well as contracts that track an *arbitrarily large* number of NFTs. Additional applications are discussed below.
-
-This standard is inspired by the ERC-20 token standard and builds on two years of experience since EIP-20 was created. EIP-20 is insufficient for tracking NFTs because each asset is distinct (non-fungible) whereas each of a quantity of tokens is identical (fungible).
-
-Differences between this standard and EIP-20 are examined below.
 
 ## Specification
 
