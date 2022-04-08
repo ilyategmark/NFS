@@ -87,7 +87,7 @@ Here's the table of all possible and impossible states updated for this principl
 |NFT|k% share of User|False|NFT can't contain User|
 |User|k% share of User|False|User can't own User|
 
-For example, 35% share of NFT A may belong to sNFT X and 65% share of NFT A can belong to User U: 
+For example: 
 
     // 35% of NFT A belongs to Structured NFT X and 65% of NFT A belongs to user U 
     assert ( ownersOf(A) == {X: 35%, U: 65%} ) // sum equals to 100%
