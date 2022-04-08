@@ -34,9 +34,7 @@ In this paper we follow this legend:
 |User|-|U, V, W|
 
 ### Principle 2
-In contrast to **Plain NFTs**, the **Structured NFTs** can contain other NFTs. In other words **Plain NFTs** and **Structured NFTs** can be owned by **Structured NFTs** and/or **Users**.
-
-Here's the list of all possible and impossible states:
+In contrast to **Plain NFTs**, the **Structured NFTs** can contain other NFTs. Besides, Users can also own NFTs. Here's the list of all possible and impossible states:
 
 | Owner | Property | Valid case |Comment|
 |---|---|---|---|
@@ -46,6 +44,7 @@ Here's the list of all possible and impossible states:
 |sNFT|sNFT|True|Structured NFT contains fully another Structured NFT|
 |pNFT|sNFT|False|Plain NFT can't contain Structured NFT|
 |NFT|User|False|NFT can't contain User|
+|User|User|False|User can't own User|
 
 Here are the examples of this principle:
 
