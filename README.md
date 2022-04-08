@@ -1,12 +1,13 @@
 ---
-codename: Structured 721
-title: Structured Non-Fungible Token Standard
+codename: Structured NFT
+title: Structured Non-Fungible Token Standard (derived from EIP-721)
 author: Ilya Tegmark 
-discussions-to: https://github.com/ilyategmark/advanced721/discussions/
+discussions-to: https://github.com/ilyategmark/structuredNFT/discussions/
 type: Standards
 category: Improvement Proposal
 status: Work in progress
 created: 2022-04-08
+version: 0.1.1
 ---
 
 ## Simple Summary
