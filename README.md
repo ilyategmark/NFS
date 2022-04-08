@@ -22,11 +22,11 @@ Such higher-level NFT, which sole purpose is to hold ownership of other NFTs is 
 ## Principles
 
 ### Principle 1
-There are two types of `NFTs`: `Plain NFTs` and `Structured NFTs`. 
+There are two types of NFTs: **Plain NFTs** and **Structured NFTs**. 
 
 In this paper we follow this legend:
 
-|Name|Abbr.|ids|
+|Name|Abbr.|ids in this paper|
 |---|---|---|
 |Plain NFT|pNFT|-|
 |Structured NFT|sNFT|X, Y, Z|
@@ -34,7 +34,9 @@ In this paper we follow this legend:
 |User|-|U, V, W|
 
 ### Principle 2
-In contrast to `Plain NFTs`, the `Structured NFTs` can contain other NFTs. In other words `Plain NFTs` and `Structured NFTs` can be owned by `Structured NFTs` and/or `Users`.
+In contrast to **Plain NFTs**, the **Structured NFTs** can contain other NFTs. In other words **Plain NFTs** and **Structured NFTs** can be owned by **Structured NFTs** and/or **Users**.
+
+Here's the list of all possible and impossible states:
 
 | Owner | Property | Valid case |Comment|
 |---|---|---|---|
@@ -45,6 +47,7 @@ In contrast to `Plain NFTs`, the `Structured NFTs` can contain other NFTs. In ot
 |pNFT|sNFT|False|Plain NFT can't contain Structured NFT|
 |NFT|User|False|NFT can't contain User|
 
+Here are the examples of this principle:
 
     // Given the following NFTs and user's ids: A, B, C, D, X, U
     
@@ -59,7 +62,7 @@ In contrast to `Plain NFTs`, the `Structured NFTs` can contain other NFTs. In ot
 
 
 ### Principle 3
-The price of Structured NFT is equivalent to sum of prices of its elements. 
+The price of **Structured NFT** is equivalent to sum of prices of its elements. 
 
     // Price of sNFT X is the sum of prices of its elements A and B
     assert ( ownedBy(X) == {A, B} )
