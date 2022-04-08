@@ -55,9 +55,12 @@ The examples of this principle:
 
     // sNFT X fully owns NFTs A and B
     assert ( ownedBy(X) == {A, B} )
+    assert ( ownerOf(B) == X )
 
     // User U fully owns NFTs C and D
     assert ( ownedBy(U) == {C, D} )
+    assert ( ownerOf(C) == U )
+    assert ( ownerOf(D) == U )
 
 
 ### Principle 3
@@ -88,12 +91,19 @@ For example, 35% share of NFT A may belong to sNFT X and 65% share of NFT A can 
 
     // 35% of NFT A belongs to Structured NFT X and 65% of NFT A belongs to user U 
     assert ( ownersOf(A) == {X: 35%, U: 65%} ) // sum equals to 100%
+    assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to sNFT X equals to 35%
+    assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to user U equals to 65%
 
     // User U owns 65% of NFT A and 20% of sNFT Y
     assert ( ownedBy(U) == {A: 65%, Y: 20%} ) // sum doesn't equal to 100%
+    assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to user U equals to 65%
+    assert ( shareOf(Y, U) == 20% ) // share of sNFT Y belonging to user U equals to 20%
 
     // Structured NFT X owns 35% of NFT A and 70% of sNFT Y
     assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
+    assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to sNFT X equals to 35%
+    assert ( shareOf(Y, X) == 70% ) // share of sNFT Y belonging to sNFT X equals to 70%
+    
 
 
 ### Principle 5
