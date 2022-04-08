@@ -10,15 +10,41 @@ created: 2022-04-08
 version: 0.1.1
 ---
 
-## Simple Summary
+## Executive Summary
 
-An standard interface for structured non-fungible tokens (SNFT), extending standard interface for plain NFT, which originated from ERC-721 standard. This standard defines:
+A standard interface for structured non-fungible tokens (sNFT), extending standard interface for plain NFT, which originated from EIP-721. 
+
+This standard provides answer to question: 
+> What if ownership of an NFT could be shared among several entities: not only users, but also other NFTs?
+
+Such higher-level NFT, which sole purpose is to hold ownership of other NFTs is named `Structured NFT` or `sNFT`. This paper provides interfaces, events, functions for sNFT. 
+
+## Principles
 
 ### Principle 1
-There are two types of NFTs: Plain NFTs (pNFT) and Structured NFTs (sNFT, denoted as X, Y or Z in this paper). Collectively these two types are referred to as NFTs (denoted as letters A .. D in this paper). NFTs may belong to either Users (denoted as letters U .. W in this paper) or sNFTs.
+There are two types of `NFTs`: `Plain NFTs` and `Structured NFTs`. 
+
+In this paper we follow this legend:
+
+|Name|Abbr.|ids|
+|---|---|---|
+|Plain NFT|pNFT|-|
+|Structured NFT|sNFT|X, Y, Z|
+|Any NFT|NFT|A, B, C| 
+|User|-|U, V, W|
 
 ### Principle 2
-Structured are different from Plain NFTs in that they be composed of other NFTs. In other words both Plain and Structured NFTs can be elements, owned by Structured NFTs.
+In contrast to `Plain NFTs`, the `Structured NFTs` can contain other NFTs. In other words `Plain NFTs` and `Structured NFTs` can be owned by `Structured NFTs` and/or `Users`.
+
+| Owner | Property | Valid case |Comment|
+|---|---|---|---|
+|User|pNFT|True|Standard use case: User fully owns Plain NFT|
+|User|sNFT|True|User fully owns Structured NFT|
+|sNFT|pNFT|True|Structured NFT contains fully Plain NFT|
+|sNFT|sNFT|True|Structured NFT contains fully another Structured NFT|
+|pNFT|sNFT|False|Plain NFT can't contain Structured NFT|
+|NFT|User|False|NFT can't contain User|
+
 
     // Given the following NFTs and user's ids: A, B, C, D, X, U
     
