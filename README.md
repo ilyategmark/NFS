@@ -109,7 +109,8 @@ For example:
 ### Principle 5
 > The price of **Structured NFT** is equivalent to weighted sum of prices of its partially owned elements. 
 
-    // Price of sNFT X is the sum of prices of its elements A and Y multiplied respectively by the shares owned by X
+    // Price of sNFT X is the sum of prices of its elements A and Y 
+    // multiplied respectively by the shares owned by X
     assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
     assert ( priceOf(X) == priceOf(A) * 35% + priceOf(Y) * 70% )
 
