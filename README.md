@@ -34,9 +34,9 @@ In this paper we follow this legend:
 |User|-|U, V, W|
 
 ### Principle 2
-In contrast to **Plain NFTs**, the **Structured NFTs** can contain other NFTs. Besides, Users can also own NFTs. Here's the list of all possible and impossible states:
+In contrast to **Plain NFTs**, the **Structured NFTs** can contain other NFTs. Here's the table of all possible and impossible states:
 
-| Owner | Property | Valid case |Comment|
+| Owner | Owned property | Valid case? |Comment|
 |---|---|---|---|
 |User|pNFT|True|Standard use case: User fully owns Plain NFT|
 |User|sNFT|True|User fully owns Structured NFT|
@@ -46,7 +46,7 @@ In contrast to **Plain NFTs**, the **Structured NFTs** can contain other NFTs. B
 |NFT|User|False|NFT can't contain User|
 |User|User|False|User can't own User|
 
-Here are the examples of this principle:
+The examples of this principle:
 
     // Given the following NFTs and user's ids: A, B, C, D, X, U
     
@@ -63,12 +63,25 @@ Here are the examples of this principle:
 ### Principle 3
 The price of **Structured NFT** is equivalent to sum of prices of its elements. 
 
-    // Price of sNFT X is the sum of prices of its elements A and B
-    assert ( ownedBy(X) == {A, B} )
-    assert ( priceOf(X) == priceOf(A) + priceOf(B) )
+    // Price of sNFT X is the sum of prices of its elements A and Y
+    assert ( ownedBy(X) == {A, Y} )
+    assert ( priceOf(X) == priceOf(A) + priceOf(Y) )
 
 ### Principle 4
-Partial ownership is allowed. Users and sNFTs may own other NFTs partially. For example, 35% share of NFT A may belong to sNFT X and 65% share of NFT A can belong to User U: 
+Partial ownership is allowed: Users and sNFTs may own other NFTs partially. Here's the table of all possible and impossible states updated for this principle:
+
+| Owner | Owned property | Valid case? |Comment|
+|---|---|---|---|
+|User|k% share of pNFT|True|User owns k% share of Plain NFT|
+|User|k% share of sNFT|True|User owns k% share of Structured NFT|
+|sNFT|k% share of pNFT|True|Structured NFT contains k% share of Plain NFT|
+|sNFT|k% share of sNFT|True|Structured NFT contains k% share of another Structured NFT|
+|pNFT|k% share of sNFT|False|Plain NFT can't contain Structured NFT|
+|NFT|k% share of User|False|NFT can't contain User|
+|User|k% share of User|False|User can't own User|
+
+
+For example, 35% share of NFT A may belong to sNFT X and 65% share of NFT A can belong to User U: 
 
     // 35% of NFT A belongs to Structured NFT X and 65% of NFT A belongs to user U 
     assert ( ownersOf(A) == {X: 35%, U: 65%} ) // sum equals to 100%
@@ -79,6 +92,13 @@ Partial ownership is allowed. Users and sNFTs may own other NFTs partially. For 
     // Structured NFT X owns 35% of NFT A and 70% of sNFT Y
     assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
 
+
+### Principle 5
+The price of **Structured NFT** is equivalent to weighted sum of prices of its partially owned elements. 
+
+    // Price of sNFT X is the sum of prices of its elements A and Y multiplied respectively by the shares owned by X
+    assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
+    assert ( priceOf(X) == priceOf(A) * 35% + priceOf(Y) * 70% )
 
 
 
