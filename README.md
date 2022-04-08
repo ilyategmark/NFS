@@ -17,13 +17,15 @@ A standard interface for structured non-fungible tokens (sNFT), extending standa
 This standard provides answer to question: 
 > What if ownership of an NFT could be shared among several entities: not only users, but also other NFTs?
 
-Such higher-level NFT, which sole purpose is to hold ownership of other NFTs is named **Structured NFT** or **sNFT**. This paper provides interfaces, events, functions for sNFT. 
+One small change creates multitude of use cases in registration of legal entities, structured financial assets, real estate, complex projects, SPVs (special purpose vehicles) etc.
+
+Such higher-level NFT, which sole purpose is to hold ownership of other NFTs is named **Structured NFT** or **sNFT**. This paper provides public functions definitions for sNFT. 
 
 We are very inclusive in the process of development of this document and invite anyone with contributions into our discussion. 
 
 ## Rationale
 
-Structured ownership of non-fungible tokens is a logical next step in evolution of NFTs. Legal entities, big assets, real estate properties, complex projects, SPVs (special purpose vehicles) and other cases require that owned property could be composed of many components and could belong to several entities in various proportions. This standard extends existing NFT standard to account for such use cases and compatible with any NFT on any blockchain.
+Structured ownership of non-fungible tokens is a logical next step in evolution of NFTs. Legal entities, structured financial assets, real estate properties, complex projects, SPVs (special purpose vehicles) and other cases require that owned property could be composed of many components and could belong to several entities in various proportions. This standard extends existing NFT standard to account for such use cases and compatible with any NFT on any blockchain.
 
 ## Principles
 
@@ -99,7 +101,7 @@ Here's the table of all possible and impossible states updated for this principl
 
 For example: 
 
-    // 35% of NFT A belongs to Structured NFT X and 65% of NFT A belongs to user U 
+    // 35% of NFT A belongs to Structured NFT X and the rest 65% of NFT A belongs to user U 
     assert ( ownersOf(A) == {X: 35%, U: 65%} ) // sum equals to 100%
     assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to sNFT X equals to 35%
     assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to user U equals to 65%
@@ -124,7 +126,8 @@ For example:
     assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
     assert ( priceOf(X) == priceOf(A) * 35% + priceOf(Y) * 70% )
 
-
+### Principle 6
+> As long as user owns > 50% of an asset, it can solely make transactions. If user owns <= 50% of an asset, they can propose transaction with specified deadline, which waits until it reaches > 50% support. User may terminate the proposal before the trasnaction happened. User may agree with the proposal.  User may see the proposals of others and the support they gathered. Users may ask the voting be either anonymous or not.   
 
 ## Abstract
 
