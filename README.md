@@ -19,6 +19,10 @@ This standard provides answer to question:
 
 Such higher-level NFT, which sole purpose is to hold ownership of other NFTs is named **Structured NFT** or **sNFT**. This paper provides interfaces, events, functions for sNFT. 
 
+## Rationale
+
+Structured ownership of non-fungible tokens is a logical next step in evolution of NFTs. Legal entities, real estate properties, complex projects, SPVs (special purpose vehicles) and other cases require that assets could be composed of many components and could belong to several entities in various proportions. This standard extends existing NFT standard to account for such use cases. 
+
 ## Principles
 
 ### Principle 1
