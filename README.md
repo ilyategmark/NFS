@@ -17,7 +17,7 @@ A standard interface for Non-Fungible Structures (NFS), extending standard inter
 This standard provides answer to question: 
 > How would change the way we treat NFTs, if they could have internal mutable structure composed of other NFTs or shares of other NFTs? 
 
-Structured ownership of non-fungible tokens is a logical next step in evolution of NFTs and creates multitude of use  cases: legal entities, structured financial assets, real estate properties, complex projects, SPVs (special purpose vehicles) and many more. All such cases require that owned property could be composed of many components, could belong to several entities in various proportions and mutable by nature. 
+Structured ownership of non-fungible tokens is a logical next step in evolution of NFTs and creates multitude of use  cases: legal entities, structured financial assets, real estate properties, complex projects, SPVs (special purpose vehicles) and many more. All such cases require that owned property could be composed of many components, could belong to several entities in various proportions and are mutable by nature. 
 
 Such higher-level NFT, which holds ownership of other NFTs is named **Non-Fungible Structure** or **NFS**. This paper provides principles of operation and public functions definitions for NFS. 
 
@@ -31,44 +31,46 @@ Examples and definitions in this paper are written in a language of Internet Com
 ## Principles
 
 ### Principle 1
-> There are two types of NFTs: **Plain NFTs** and **Structured NFTs**. 
+> There exists **Non-Fungible Tokens**, **Non-Fungible Structures** and **Users** 
 
 In this paper we follow this legend:
 
-|Name|Abbr.|ids used in this paper|
-|---|---|---|
-|Plain NFT|pNFT|-|
-|Structured NFT|sNFT|X, Y, Z|
-|Any NFT|NFT|A, B, C| 
+|Name|Abbreviations used in this paper|Identifiers used in this paper|
+|---|:-:|--:|
+|Non-Fungible Token|NFT|-|
+|Non-Fungible Structure|NFS|X, Y, Z|
+|Non-Fungibles (either NFT or NFS)|NF|A, B, C| 
 |User|-|U, V, W|
 
 ### Principle 2
-> In contrast to **Plain NFTs**, the **Structured NFTs** can contain other NFTs. Here's the table of all possible and impossible states:
+> In contrast to **NFT**, which doesn't have internal structure, the **NFS** can contain other Non-Fungibles, either NFTs or NFSs. 
 
-| Owner | Owned property | Possible state? |Comment|
-|---|---|---|---|
-|User|pNFT|True|Standard use case: User fully owns Plain NFT|
-|User|sNFT|True|User fully owns Structured NFT|
-|sNFT|pNFT|True|Structured NFT contains fully a Plain NFT|
-|sNFT|sNFT|True|Structured NFT contains fully another Structured NFT|
-|pNFT|sNFT|False|Plain NFT can't contain Structured NFT|
-|NFT|User|False|NFT can't contain User|
+Here's the table of all possible and impossible states:
+
+|Owner|Owned property|Possible state?|Comment|
+|---|:-:|:-:|---|
+|User|NFT|True|Classic use case: User fully owns NFT|
+|User|NFS|True|User fully owns NFS|
+|NFS|NFT|True|Non-Fungible Structure contains fully an NFT|
+|NFS|NFS|True|NFS contains fully another NFS|
+|NFT|NF|False|NFT can't contain other Non-Fungibles|
+|NF|User|False|Non-Fungibles can't contain User|
 |User|User|False|User can't own User|
 
 The examples of this principle:
 ```motoko
-// Given the following NFTs and user's ids: A, B, C, D, X, U
+// Given the following identifiers of Non-Fungibles (A, B, C, D, X) and User (U): 
 
-// NFT A fully belongs to sNFT X
+// Non-Fungible A fully belongs to NFS X
 assert ( ownerOf(A) == X )
 assert ( ownersOf(A) == {X: 100%} )
 
-// sNFT X fully owns NFTs A and B
+// NFS X fully owns Non-Fungibles A and B
 assert ( ownedBy(X) == {A: 100%, B: 100%} )
 assert ( ownerOf(B) == X )
 assert ( ownersOf(B) == {X: 100%} )
 
-// User U fully owns NFTs C and D
+// User U fully owns Non-Fungibles C and D
 assert ( ownedBy(U) == {C: 100%, D: 100%} )
 assert ( ownerOf(C) == U )
 assert ( ownersOf(C) == {U: 100%} )
@@ -77,27 +79,18 @@ assert ( ownersOf(D) == {U: 100%} )
 ```
 
 ### Principle 3
-> The price of **Structured NFT** is equivalent to sum of prices of its fully owned elements. 
-
-Here's an example of code:
-```motoko
-// Price of sNFT X is the sum of prices of its elements A and Y
-assert ( ownedBy(X) == {A: 100%, Y: 100%} )
-assert ( priceOf(X) == priceOf(A) + priceOf(Y) )
-```
-### Principle 4
-> Partial ownership is allowed: Users and sNFTs may own other NFTs partially. 
+> Partial ownership is allowed: User may own and NFS may contain other non-fungibles partially. 
 
 Here's the table of all possible and impossible states updated for this principle:
 
-| Owner | Owned property | Possible state? |Comment|
-|---|---|---|---|
-|User|k% share of pNFT|True|User owns k% share of Plain NFT|
-|User|k% share of sNFT|True|User owns k% share of Structured NFT|
-|sNFT|k% share of pNFT|True|Structured NFT contains k% share of Plain NFT|
-|sNFT|k% share of sNFT|True|Structured NFT contains k% share of another Structured NFT|
-|pNFT|k% share of sNFT|False|Plain NFT can't contain Structured NFT|
-|NFT|k% share of User|False|NFT can't contain User|
+|Owner|Owned property|Possible state?|Comment|
+|---|:-:|:-:|---|
+|User|k% share of NFT|True|User owns k% share of NFT|
+|User|k% share of NFS|True|User owns k% share of NFS|
+|NFS|k% share of NFT|True|Non-Fungible Structure contains k% share of NFT|
+|NFS|k% share of NFS|True|NFS contains k% share of another NFS|
+|NFT|k% share of NF|False|NFT can't contain other Non-Fungibles|
+|NF|k% share of User|False|Non-Fungibles can't contain User|
 |User|k% share of User|False|User can't own User|
 
 For example: 
@@ -120,12 +113,12 @@ assert ( shareOf(Y, X) == 70% ) // share of sNFT Y belonging to sNFT X equals to
 
 
 ### Principle 5
-> The price of **Structured NFT** is equivalent to weighted sum of prices of its partially owned elements. 
+> The value of **NFS** is equivalent to weighted sum of values of its partially owned elements. 
 ```motoko
 // Price of sNFT X is the sum of prices of its elements A and Y 
 // multiplied respectively by the shares owned by X
 assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
-assert ( priceOf(X) == priceOf(A) * 35% + priceOf(Y) * 70% )
+assert ( valueOf(X) == valueOf(A) * 35% + valueOf(Y) * 70% )
 ```
 ### Principle 6
 > As long as user owns > 50% of an asset, it can solely make transactions. If user owns <= 50% of an asset, they can propose transaction with specified deadline, which waits until it reaches > 50% support. User may terminate the proposal before the trasnaction happened. User may agree with the proposal.  User may see the proposals of others and the support they gathered. Users may ask the voting be either anonymous or not.   
@@ -163,6 +156,9 @@ assert ( priceOf(X) == priceOf(A) * 35% + priceOf(Y) * 70% )
 
 ### Principle 14
 > Users may delegate their voting rights to other Users regarding any sNFT, which belongs them directly or through intermediary sNFTs.
+
+### Principle 15
+> NFS has its own balance of coins, which allowed in this network (blockchain).
 
 Charter of sNFT may have rules,  that 
 
