@@ -129,6 +129,18 @@ For example:
 ### Principle 6
 > As long as user owns > 50% of an asset, it can solely make transactions. If user owns <= 50% of an asset, they can propose transaction with specified deadline, which waits until it reaches > 50% support. User may terminate the proposal before the trasnaction happened. User may agree with the proposal.  User may see the proposals of others and the support they gathered. Users may ask the voting be either anonymous or not.   
 
+### Principle 7
+> While Plain NFTs are immutable, the Structured NFTs can change over time: new NFTs can be added, some NFTs can be removed, the share of NFT which belongs to the Structured NFT can change. 
+
+### Principle 8
+> Special rules can be applied to Structured NFT's charter during the creation: 
+> 1. Approval vote level (k%) required to make changes to charter
+> 1. Approval vote level (k%)required to change the holders of the Structured NFT
+> 1. Approval vote level (k%)required to change the structure of NFT
+> 1. Approval vote level (k%)required to forced buyout of the Structured NFT from the rest of owners
+> 1. Can you exit the ownership at your will or it requires approval from other owners and at what vote level (k%)
+> 1. Can you burn your ownership of the Structured NFT at your will
+
 ## Abstract
 
 The following standard allows for the implementation of a standard API for Plain and Structured NFTs within smart contracts. Its derived from https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md. 
