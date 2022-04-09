@@ -31,15 +31,15 @@ Examples and definitions in this paper are written in a language of Internet Com
 ## Principles
 
 ### Principle 1
-> There exists **Non-Fungible Tokens**, **Non-Fungible Structures** and **Users** 
+> There exist **Non-Fungible Tokens**, **Non-Fungible Structures** and **Users** 
 
 In this paper we follow this legend:
 
-|Name|Abbreviations used in this paper|Identifiers used in this paper|
-|---|:-:|--:|
-|Non-Fungible Token|NFT|-|
-|Non-Fungible Structure|NFS|X, Y, Z|
-|Non-Fungibles (either NFT or NFS)|NF|A, B, C| 
+|Name|Wording used in this paper|Identifiers used in this paper|
+|:-:|:-:|:-:|
+|Non-Fungible Token|NFT \| plain NFT|-|
+|Non-Fungible Structure|NFS \| Structure|X, Y, Z|
+|Either NFT or NFS|NF \| Non-Fungible \| asset|A, B, C| 
 |User|-|U, V, W|
 
 ### Principle 2
@@ -61,11 +61,11 @@ The examples of this principle:
 ```motoko
 // Given the following identifiers of Non-Fungibles (A, B, C, D, X) and User (U): 
 
-// Non-Fungible A fully belongs to NFS X
+// Non-Fungible A fully belongs to Structure X
 assert ( ownerOf(A) == X )
 assert ( ownersOf(A) == {X: 100%} )
 
-// NFS X fully owns Non-Fungibles A and B
+// Structure X fully owns Non-Fungibles A and B
 assert ( ownedBy(X) == {A: 100%, B: 100%} )
 assert ( ownerOf(B) == X )
 assert ( ownersOf(B) == {X: 100%} )
@@ -95,33 +95,125 @@ Here's the table of all possible and impossible states updated for this principl
 
 For example: 
 ```motoko
-// 35% of NFT A belongs to Structured NFT X and the rest 65% of NFT A belongs to user U 
-assert ( ownersOf(A) == {X: 35%, U: 65%} ) // sum equals to 100%
-assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to sNFT X equals to 35%
-assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to user U equals to 65%
+// 35% of NFT A belongs to Structure X and the rest 65% of that NFT belongs to User U 
+assert ( ownersOf(A) == {X: 35%, U: 65%} ) // sum must equal to 100%
+assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to Structure X equals to 35%
+assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to User U equals to 65%
 
-// User U owns 65% of NFT A and 20% of sNFT Y
-assert ( ownedBy(U) == {A: 65%, Y: 20%} ) // sum doesn't equal to 100%
-assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to user U equals to 65%
-assert ( shareOf(Y, U) == 20% ) // share of sNFT Y belonging to user U equals to 20%
+// User U owns 65% of NFT A and 20% of Structure Y
+assert ( ownedBy(U) == {A: 65%, Y: 20%} ) // sum doesn't have to be equal to 100%
+assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to User U equals to 65%
+assert ( shareOf(Y, U) == 20% ) // share of Structure Y belonging to User U equals to 20%
 
-// Structured NFT X owns 35% of NFT A and 70% of sNFT Y
-assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
-assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to sNFT X equals to 35%
-assert ( shareOf(Y, X) == 70% ) // share of sNFT Y belonging to sNFT X equals to 70%
+// Structure X owns 35% of NFT A and 70% of Structure Y
+assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't have to be equal to 100%
+assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to Structure X equals to 35%
+assert ( shareOf(Y, X) == 70% ) // share of Structure Y belonging to Structure X equals to 70%
+```
+
+### Principle 4
+> The value of **NFS** is equivalent to weighted sum of values of its contained elements. 
+```motoko
+// Value of Structure X is the sum of values of its contained non-fungibles A and Y 
+// multiplied respectively by the shares owned by X
+assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't have to be equal to 100%
+assert ( valueOf(X) == valueOf(A) * 35% + valueOf(Y) * 70% )
 ```
 
 
 ### Principle 5
-> The value of **NFS** is equivalent to weighted sum of values of its partially owned elements. 
+> Users can change their ownership share in the asset by trading it either on the market, or with a specific user, e.g. other coowner
+
 ```motoko
-// Price of sNFT X is the sum of prices of its elements A and Y 
-// multiplied respectively by the shares owned by X
-assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
-assert ( valueOf(X) == valueOf(A) * 35% + valueOf(Y) * 70% )
+
+/// Place the request to buy 
+/// if you buy from market, then seller = None
+buy_req_id = requestToBuy (buyer: accountId, seller: ?accountId, asset: assetId, maxShareToBuy: Float, maxPrice: Float, coin: Text, expiration: DateTime)
+
+/// Place the request to sell
+/// if you sell to market, then buyer = None
+sell_req_id = requestToSell (seller: accountId, buyer: ?accountId, asset: assetId, maxShareToSell: Float, minPrice: Float, coin: Text, expiration: DateTime)
+
+// Accept to become the counterparty on the request
+acceptRequest(req: requestId): await Result
+
+/// Partially accept to become the counterparty on the request, but only to some extent
+partiallyAcceptRequest(req: requestId, acceptedShare: Float): await Result
+
+/// Cancel your own request
+cancelRequest(req: requestId): await Result 
+
+/// Check the status of the request
+type RequestStatus: {#issued, #completed, #cancelled, #expired, #partially_completed, #rejected};  
+statusOfRequest(req: requestId): await RequestStatus
+
+/// Reject request, issued at you
+rejectRequest(req: requestId): await Result
+
+/// Check who issued the request
+authorOfRequest(req: requestId): await Principal
+
+
 ```
+
 ### Principle 6
-> As long as user owns > 50% of an asset, it can solely make transactions. If user owns <= 50% of an asset, they can propose transaction with specified deadline, which waits until it reaches > 50% support. User may terminate the proposal before the trasnaction happened. User may agree with the proposal.  User may see the proposals of others and the support they gathered. Users may ask the voting be either anonymous or not.   
+> User, who owns k% shares of NFS can do the following with that: 
+> 1. Change the structure of NFS, if own > 50%
+> 2. Propose to change the structure of NFS, if own < 50%
+> 3. Vote on proposals of other coowners
+
+To ensure that we enumerate all possible variants of what an owner could do with the owned asset, lets take a look at the ownership table, particularly at the user U, and assets X and A. 
+
+|Owners|A|B|C|X|Y|Z|
+|:-:|--:|--:|--:|--:|--:|--:|
+|U|25%|0%|25%|10%|25%|20%|
+|V|0%|15%|5%|15%|20%|15%|
+|W|10%|10%|30%|25%|15%|0%|
+|X|55%|25%|20%|25%|30%|10%|
+|Y|0%|30%|20%|25%|0%|40%|
+|Z|10%|20%|0%|0%|10%|15%|
+|∑|100%|100%|100%|100%|100%|100%|
+
+User U owns 25% of NFT A and 10% of Structure X, which in turn contains 55% of NFT A. Besides that, 25% of Structure X belongs to itself (this is called Treasury Shares in finance https://www.investopedia.com/terms/t/treasurystock.asp). Also, Structure X contains some shares of non-fungibles B, C, X, Y and Z.  
+So, User U can: 
+1. Buy or sell shares of X at own will, without asking for anyone's approval or requesting anyone's vote.
+2. Propose to vote on motion to increase/decrease the treasury shares of X. Treasury shares of X can't participate in the vote. Since treasury shares account for 25% of Structure X shareholding (see intersection of row X and column X), then for this motion to succeed it should get more than 37.5% of votes ( 37.5% = (100% - 25%) / 2 ). If the motion suceeds, then the size of treasury share is changed, and the rest owners gain or lose share of Structure X proportionaly, so that the sum of Structure X shares remains equal to 100%. 
+3. Propose to vote on motion for Structure X to buy or sell shares of assets. Treasury shares of X can't participate in the vote, so for this motion to succeed it should get more than 37.5% of votes. If this motion suceeds, then Structure X buys or sells assets. Structure X uses it's own currency wallet balances to pay for purchases and/or receives proceeds from selling the assets to the Structure X wallet. Here we for the first time encounter the need for the NFS to have their own currency balances and hence own wallets.  
+
+
+
+
+```motoko
+/// Change the structure of NFS
+
+
+
+
+
+
+
+```
+
+
+### Principle 5
+> State of Structure can change in the following ways
+
+### Principle 6
+> The following changes of state require vote from the owners
+
+
+### Principle 5
+> As long as user owns > 50% of an asset, it can solely make transactions. If user owns <= 50% of an asset, they can propose transaction for a vote with specified deadline, which waits until it reaches > 50% support. User may terminate the proposal before the trasnaction happened. User may vote to agree with the proposal. User may see the proposals of others and the support they gathered. Users may ask the voting be either anonymous or not.
+
+```motoko
+// Users transact or vote
+assert ( shareOf(Y, X) == 70% ) // share of Structure Y belonging to Structure X equals to 70%
+public shared(msg) func transferFrom(from : Principal, to : Principal, tokenId : Nat) : () 
+
+
+```
+
+
 
 ### Principle 7
 > While Plain NFTs are immutable, the Structured NFTs can change over time: new NFTs can be added, some NFTs can be removed, the share of NFT which belongs to the Structured NFT can change. 
