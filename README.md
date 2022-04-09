@@ -55,35 +55,35 @@ In this paper we follow this legend:
 |User|User|False|User can't own User|
 
 The examples of this principle:
+```motoko
+// Given the following NFTs and user's ids: A, B, C, D, X, U
 
-    // Given the following NFTs and user's ids: A, B, C, D, X, U
-    
-    // NFT A fully belongs to sNFT X
-    assert ( ownerOf(A) == X )
-    assert ( ownersOf(A) == {X: 100%} )
+// NFT A fully belongs to sNFT X
+assert ( ownerOf(A) == X )
+assert ( ownersOf(A) == {X: 100%} )
 
-    // sNFT X fully owns NFTs A and B
-    assert ( ownedBy(X) == {A: 100%, B: 100%} )
-    assert ( ownerOf(B) == X )
-    assert ( ownersOf(B) == {X: 100%} )
+// sNFT X fully owns NFTs A and B
+assert ( ownedBy(X) == {A: 100%, B: 100%} )
+assert ( ownerOf(B) == X )
+assert ( ownersOf(B) == {X: 100%} )
 
-    // User U fully owns NFTs C and D
-    assert ( ownedBy(U) == {C: 100%, D: 100%} )
-    assert ( ownerOf(C) == U )
-    assert ( ownersOf(C) == {U: 100%} )
-    assert ( ownerOf(D) == U )
-    assert ( ownersOf(D) == {U: 100%} )
-
+// User U fully owns NFTs C and D
+assert ( ownedBy(U) == {C: 100%, D: 100%} )
+assert ( ownerOf(C) == U )
+assert ( ownersOf(C) == {U: 100%} )
+assert ( ownerOf(D) == U )
+assert ( ownersOf(D) == {U: 100%} )
+```
 
 ### Principle 3
 > The price of **Structured NFT** is equivalent to sum of prices of its fully owned elements. 
 
 Here's an example of code:
-
-    // Price of sNFT X is the sum of prices of its elements A and Y
-    assert ( ownedBy(X) == {A: 100%, Y: 100%} )
-    assert ( priceOf(X) == priceOf(A) + priceOf(Y) )
-
+```motoko
+// Price of sNFT X is the sum of prices of its elements A and Y
+assert ( ownedBy(X) == {A: 100%, Y: 100%} )
+assert ( priceOf(X) == priceOf(A) + priceOf(Y) )
+```
 ### Principle 4
 > Partial ownership is allowed: Users and sNFTs may own other NFTs partially. 
 
@@ -100,32 +100,32 @@ Here's the table of all possible and impossible states updated for this principl
 |User|k% share of User|False|User can't own User|
 
 For example: 
+```motoko
+// 35% of NFT A belongs to Structured NFT X and the rest 65% of NFT A belongs to user U 
+assert ( ownersOf(A) == {X: 35%, U: 65%} ) // sum equals to 100%
+assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to sNFT X equals to 35%
+assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to user U equals to 65%
 
-    // 35% of NFT A belongs to Structured NFT X and the rest 65% of NFT A belongs to user U 
-    assert ( ownersOf(A) == {X: 35%, U: 65%} ) // sum equals to 100%
-    assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to sNFT X equals to 35%
-    assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to user U equals to 65%
+// User U owns 65% of NFT A and 20% of sNFT Y
+assert ( ownedBy(U) == {A: 65%, Y: 20%} ) // sum doesn't equal to 100%
+assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to user U equals to 65%
+assert ( shareOf(Y, U) == 20% ) // share of sNFT Y belonging to user U equals to 20%
 
-    // User U owns 65% of NFT A and 20% of sNFT Y
-    assert ( ownedBy(U) == {A: 65%, Y: 20%} ) // sum doesn't equal to 100%
-    assert ( shareOf(A, U) == 65% ) // share of NFT A belonging to user U equals to 65%
-    assert ( shareOf(Y, U) == 20% ) // share of sNFT Y belonging to user U equals to 20%
-
-    // Structured NFT X owns 35% of NFT A and 70% of sNFT Y
-    assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
-    assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to sNFT X equals to 35%
-    assert ( shareOf(Y, X) == 70% ) // share of sNFT Y belonging to sNFT X equals to 70%
-    
+// Structured NFT X owns 35% of NFT A and 70% of sNFT Y
+assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
+assert ( shareOf(A, X) == 35% ) // share of NFT A belonging to sNFT X equals to 35%
+assert ( shareOf(Y, X) == 70% ) // share of sNFT Y belonging to sNFT X equals to 70%
+```
 
 
 ### Principle 5
 > The price of **Structured NFT** is equivalent to weighted sum of prices of its partially owned elements. 
-
-    // Price of sNFT X is the sum of prices of its elements A and Y 
-    // multiplied respectively by the shares owned by X
-    assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
-    assert ( priceOf(X) == priceOf(A) * 35% + priceOf(Y) * 70% )
-
+```motoko
+// Price of sNFT X is the sum of prices of its elements A and Y 
+// multiplied respectively by the shares owned by X
+assert ( ownedBy(X) == {A: 35%, Y: 70%} ) // sum doesn't equal to 100%
+assert ( priceOf(X) == priceOf(A) * 35% + priceOf(Y) * 70% )
+```
 ### Principle 6
 > As long as user owns > 50% of an asset, it can solely make transactions. If user owns <= 50% of an asset, they can propose transaction with specified deadline, which waits until it reaches > 50% support. User may terminate the proposal before the trasnaction happened. User may agree with the proposal.  User may see the proposals of others and the support they gathered. Users may ask the voting be either anonymous or not.   
 
