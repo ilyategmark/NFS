@@ -1,31 +1,32 @@
 ---
-codename: Structured NFT
-title: Structured Non-Fungible Token Standard (derived from EIP-721)
+codename: NFS
+title: Non-Fungible Structure Standard (derived from EIP-721)
 author: Ilya Tegmark 
 discussions-to: https://github.com/ilyategmark/structuredNFT/discussions/
 type: Standards
 category: Improvement Proposal
 status: Request for contributions
 created: 2022-04-08
-version: 0.1.4
+version: 0.1.5
 ---
 
 ## Executive Summary
 
-A standard interface for structured non-fungible tokens (sNFT), extending standard interface for plain NFT, which originated from EIP-721. 
+A standard interface for Non-Fungible Structures (NFS), extending standard interface for non-fungible tokens (NFT), which originated from EIP-721. 
 
 This standard provides answer to question: 
-> What if ownership of an NFT could be shared among several entities: not only users, but also other NFTs?
+> How would change the way we treat NFTs, if they could have internal mutable structure composed of other NFTs or shares of other NFTs? 
 
-One small change creates multitude of use cases in registration of legal entities, structured financial assets, real estate, complex projects, SPVs (special purpose vehicles) etc.
+Structured ownership of non-fungible tokens is a logical next step in evolution of NFTs and creates multitude of use  cases: legal entities, structured financial assets, real estate properties, complex projects, SPVs (special purpose vehicles) and many more. All such cases require that owned property could be composed of many components, could belong to several entities in various proportions and mutable by nature. 
 
-Such higher-level NFT, which sole purpose is to hold ownership of other NFTs is named **Structured NFT** or **sNFT**. This paper provides public functions definitions for sNFT. 
+Such higher-level NFT, which holds ownership of other NFTs is named **Non-Fungible Structure** or **NFS**. This paper provides principles of operation and public functions definitions for NFS. 
 
 We are very inclusive in the process of development of this document and invite anyone with contributions into our discussion. 
 
-## Rationale
+This standard extends existing NFT standard to account for such use cases and compatible with any NFT on any blockchain.
 
-Structured ownership of non-fungible tokens is a logical next step in evolution of NFTs. Legal entities, structured financial assets, real estate properties, complex projects, SPVs (special purpose vehicles) and other cases require that owned property could be composed of many components and could belong to several entities in various proportions. This standard extends existing NFT standard to account for such use cases and compatible with any NFT on any blockchain.
+Examples and definitions in this paper are written in a language of Internet Computer Network — Motoko, which is a clean, powerful and self-explanatory language for smartcontracts and dApps built with Rust. 
+
 
 ## Principles
 
@@ -133,13 +134,37 @@ assert ( priceOf(X) == priceOf(A) * 35% + priceOf(Y) * 70% )
 > While Plain NFTs are immutable, the Structured NFTs can change over time: new NFTs can be added, some NFTs can be removed, the share of NFT which belongs to the Structured NFT can change. 
 
 ### Principle 8
-> Special rules can be applied to Structured NFT's charter during the creation: 
-> 1. Approval vote level (k%) required to make changes to charter
-> 1. Approval vote level (k%)required to change the holders of the Structured NFT
-> 1. Approval vote level (k%)required to change the structure of NFT
-> 1. Approval vote level (k%)required to forced buyout of the Structured NFT from the rest of owners
-> 1. Can you exit the ownership at your will or it requires approval from other owners and at what vote level (k%)
-> 1. Can you burn your ownership of the Structured NFT at your will
+> Structuredd NFTs are created with charter, which addresses fundamental questions of Structured NFT lifecycle: 
+1. Approval vote level (k%) required to make changes to charter
+2. Approval vote level (k%) required to change the holders of the Structured NFT
+3. Approval vote level (k%) required to change the structure of NFT
+4. Approval vote level (k%) required to forced buyout of the Structured NFT from the rest of owners
+5. Can you exit the ownership at your will or it requires approval from other owners and at what vote level (k%)
+6. Can you burn your ownership of the Structured NFT at your will
+7. Approval vote level (k%) required to destroy the Structured NFT
+8. What happens to shares of NFTs, owned by sNFT, after sNFT is destroyed (burned, transferred to the owners of destroyed sNFT)
+
+### Principle 9
+> Structured NFTs can be destroyed
+
+### Principle 10
+> Shares of Structured NFTs can be sold
+
+### Principle 11
+> Only Users are conscious to vote and make decisions. If a vote from sNFTs is required, then it's elevated up the ownership graph until Users are found.  
+> requestForVote received by sNFT is propagated further up to the owners of sNFT
+
+### Principle 12
+> sNFT can possess own shares directly or indirectly through another intermediary sNFTs. The final beneficiary of the NFT doesn't have to be User at all, it can be sNFTs as well. 
+
+
+### Principle 13
+> Users and sNFTs can have special voting rules, regarding any sNFT, which belongs them directly or through intermediary sNFTs. 
+
+### Principle 14
+> Users may delegate their voting rights to other Users regarding any sNFT, which belongs them directly or through intermediary sNFTs.
+
+Charter of sNFT may have rules,  that 
 
 ## Abstract
 
@@ -168,55 +193,64 @@ We considered use cases of NFTs being owned and transacted by individuals or ent
 /// Count all NFTs assigned to an owner
 /// Derived from the standard 721
 /// p: Principal — an identifier for whom to query the balance
-public shared query func balanceOf(p : Principal) : async ?Nat { ... };
+public shared query func balanceOf(p : Principal) : async ?Nat 
 
 /// Find the owner of an NFT
 /// Derived from the standard 721
 /// tokenId — an identifier for an NFT
 /// Returns the address of the owner of the NFT
-public shared query func ownerOf(tokenId : TokenId) : async ?Principal { ... };
+public shared query func ownerOf(tokenId : TokenId) : async ?Principal 
 
 /// Transfers the ownership of an NFT from one address to another address
 /// Derived from the standard 721
 /// from — an identifier of the current owner of the NFT
 /// to — an identifier of the new owner
 /// tokenId — an identifier of the NFT to transfer
-public shared(msg) func transferFrom(from : Principal, to : Principal, tokenId : Nat) : () { ... };
+public shared(msg) func transferFrom(from : Principal, to : Principal, tokenId : Nat) : () 
 
 /// Change or reaffirm the approved address for an NFT
+/// Derived from the standard 721
 /// tokenId — the NFT to approve
-public shared(msg) func approve(to : Principal, tokenId : TokenId) : async () { ... };
+public shared(msg) func approve(to : Principal, tokenId : TokenId) : async () 
 
 /// Enable or disable approval for a third party ("operator") to manage
+/// Derived from the standard 721
 /// op — an address to add to the set of authorized operators
 /// isApproved — true if the operator is approved, false to revoke approval
-public shared(msg) func setApprovalForAll(op : Principal, isApproved : Bool) : () { ... };
+public shared(msg) func setApprovalForAll(op : Principal, isApproved : Bool) : () 
 
 /// Get the approved address for a single NFT
+/// Derived from the standard 721
 /// tokenId — an NFT to find the approved address for
 /// Returns the approved address for this NFT, or the zero address if there is none
-public shared func getApproved(tokenId : Nat) : async Principal { ... }; 
+public shared func getApproved(tokenId : Nat) : async Principal 
 
 /// Query if an address is an authorized operator for another address
+/// Derived from the standard 721
 /// owner — the address that owns the NFTs
 /// operator — the address that acts on behalf of the owner
 /// Returns true if `operator` is an approved operator for `owner`, false otherwise
-public shared func isApprovedForAll(owner : Principal, opperator : Principal) : async Bool { ... };
+public shared func isApprovedForAll(owner : Principal, opperator : Principal) : async Bool 
 
 /// A descriptive name for a collection of NFTs
-public shared query func name() : async Text { ...};
+/// Derived from the standard 721
+public shared query func name() : async Text 
 
 /// An abbreviated name for NFTs 
-public shared query func symbol() : async Text { ... };
+/// Derived from the standard 721
+public shared query func symbol() : async Text 
 
-/// A distinct Uniform Resource Identifier (URI) for a given asset.
-public shared query func tokenURI(tokenId : TokenId) : async ?Text { ... };
+/// A distinct Uniform Resource Identifier (URI) for a given asset
+/// Derived from the standard 721
+public shared query func tokenURI(tokenId : TokenId) : async ?Text 
 
 /// Creation of an NFT (minting)
-public shared(msg) func mint(uri : Text) : async Nat { ... };
+/// Derived from the standard 721
+public shared(msg) func mint(uri : Text) : async Nat 
 
 /// Destruction of an NFT (burning)
-public shared(msg) func burn(tokenId : Nat): async () { ... };
+/// Derived from the standard 721
+public shared(msg) func burn(tokenId : Nat): async () 
 
 
 ```
