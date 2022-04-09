@@ -1,0 +1,1 @@
+This repository is created on April 8th, 2022. It contains standard for Non-Fungible Structures (also named as structured NFT or sNFT). Ilya Tegmark. 

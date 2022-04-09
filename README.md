@@ -7,7 +7,7 @@ type: Standards
 category: Improvement Proposal
 status: Request for contributions
 created: 2022-04-08
-version: 0.1.5
+version: 0.1.6
 ---
 
 ## Executive Summary
@@ -157,28 +157,44 @@ authorOfRequest(req: requestId): await Principal
 ```
 
 ### Principle 6
-> User, who owns k% shares of NFS can do the following with that: 
-> 1. Change the structure of NFS, if own > 50%
-> 2. Propose to change the structure of NFS, if own < 50%
-> 3. Vote on proposals of other coowners
+
+> NFS is mutable and can be changed in several ways.
+
+|Owners ↓|NFT A|NFT B|NFT C|NFS X|NFS Y|NFS Z|Coin P|Coin Q|Coin R|
+|:-:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+|User U|25%|0%|25%|10%|25%|20%|30|9000|1 000 000|
+|User V|0%|15%|5%|15%|20%|15%|60|6000|2 000 000|
+|User W|10%|10%|30%|25%|15%|0%|10|3000|4 000 000|
+|NFS X|55%|25%|20%|25%|30%|10%|20|4000|3 000 000|
+|NFS Y|0%|30%|20%|25%|0%|40%|50|6000|5 000 000|
+|NFS Z|10%|20%|0%|0%|10%|15%|90|8000|8 000 000|
+|∑|100%|100%|100%|100%|100%|100%|—|—|—|
+
+Here are what changes are valid:
+
+1. Obviously, User U can change how much of Structure X it owns through trade. This however doesn't change the Structure of X. 
+2. New assets may appear in the balance of Structure X, some existing assets may disappear, owned shares may change. All this happens through trades: purchases are paid from the Structure's coins balances and proceeds from selling settled in the coin balances. 
+3. Treasury shares balance may increase or decrease not affecting coins balances, because this is zero-sum transaction.
+4. User U can send belonging to her shares and/or coins directly to NFS X, so that her owner share in X to be increased.
+5. User U can retrieve shares and/or coins directly from NFS X, so that her owner share in X to be decreased.
+6. Previous two operation can happen not only with direct subsidiary, but also deeper in the ownership structure. 
+
+
+User, who owns k% shares of NFS can do the following with that: 
+1. Change the structure of NFS, if own > 50%
+2. Propose to change the structure of NFS, if own < 50%
+3. Vote on proposals of other coowners
 
 To ensure that we enumerate all possible variants of what an owner could do with the owned asset, lets take a look at the ownership table, particularly at the user U, and assets X and A. 
 
-|Owners|A|B|C|X|Y|Z|
-|:-:|--:|--:|--:|--:|--:|--:|
-|U|25%|0%|25%|10%|25%|20%|
-|V|0%|15%|5%|15%|20%|15%|
-|W|10%|10%|30%|25%|15%|0%|
-|X|55%|25%|20%|25%|30%|10%|
-|Y|0%|30%|20%|25%|0%|40%|
-|Z|10%|20%|0%|0%|10%|15%|
-|∑|100%|100%|100%|100%|100%|100%|
+
 
 User U owns 25% of NFT A and 10% of Structure X, which in turn contains 55% of NFT A. Besides that, 25% of Structure X belongs to itself (this is called Treasury Shares in finance https://www.investopedia.com/terms/t/treasurystock.asp). Also, Structure X contains some shares of non-fungibles B, C, X, Y and Z.  
 So, User U can: 
 1. Buy or sell shares of X at own will, without asking for anyone's approval or requesting anyone's vote.
 2. Propose to vote on motion to increase/decrease the treasury shares of X. Treasury shares of X can't participate in the vote. Since treasury shares account for 25% of Structure X shareholding (see intersection of row X and column X), then for this motion to succeed it should get more than 37.5% of votes ( 37.5% = (100% - 25%) / 2 ). If the motion suceeds, then the size of treasury share is changed, and the rest owners gain or lose share of Structure X proportionaly, so that the sum of Structure X shares remains equal to 100%. 
 3. Propose to vote on motion for Structure X to buy or sell shares of assets. Treasury shares of X can't participate in the vote, so for this motion to succeed it should get more than 37.5% of votes. If this motion suceeds, then Structure X buys or sells assets. Structure X uses it's own currency wallet balances to pay for purchases and/or receives proceeds from selling the assets to the Structure X wallet. Here we for the first time encounter the need for the NFS to have their own currency balances and hence own wallets.  
+4. Propose to vote on motion for some Structure, which belong to Structure X to change its compositon
 
 
 
