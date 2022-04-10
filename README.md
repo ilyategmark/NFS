@@ -193,7 +193,7 @@ Here are what changes are valid:
     |	↓ Owners	|	NFT A	|	NFS X	|	NFS Y	|	Coin P	|	Worth of owners, P	|
     |	:--	|	--:	|	--:	|	--:	|	--:	|	--:	|
     |	User U	|	—	|	65% ↗️ 75% 	|	—	|	30 ↘️ 25	|	66.25 ⬆️	|
-    |	User V	|	—	|	10% - 10% = 0% ⬇️	|	70%	|	70 + 5 = 75 ⬆️	|	145 ⬇️	|
+    |	User V	|	—	|	10% ↘️ 0%	|	70%	|	70 ↗️ 75 	|	145 ⬇️	|
     |	NFS X	|	60% ➡️	|	—	|	15% ➡️	|	40 ➡️	|	58.00	|
     |	NFS Y	|	5%	|	—	|	—	|	50	|	50.25	|
     |	Others market	|	35%	|	25%	|	15%	|	—	|	30.50	|
@@ -203,7 +203,7 @@ Here are what changes are valid:
     |	Value with coins, P	|	5	|	55	|	100	|	190	|	350.00	|
 
     
-     ⬆️ — increased, ⬇️ — decreased, ➡️ — didn't change.
+     ↗️ — increased, ↘️ — decreased, ➡️ — didn't change.
 
 
 
@@ -212,59 +212,46 @@ Here are what changes are valid:
     For example, User V sends to the Structure X 10 Coins P and 10% of NFS Y, belonging to her. This transaction changes the internal structure of X, increasing it's total value. 
    
     Step 1:
-    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|
-    |---|--:|--:|--:|--:|
-    |User U|25%|5%|60%|30|
-    |User V|**10% - 10% = 0%** ⬇️|15%|0%|**60 - 10 = 50** ⬇️|
-    |NFS X|55%|25%|40%|20|
-    |NFS Y|**5% + 10% = 15%** ⬆️|45%|0%|**50 + 10 = 60** ⬆️|
-    |Others|5%|10%|0%|—|
-    |Check sum ∑|100%|100%|100%|—|
-    |Value, P|5|10|**15 + 10.5 = 25.5** ⬆️|—|
 
-    Total Value transferred from User V to Structure Y equals 10 Coins P + 10% of NFT A * valueOf(A) = 10P + 10% ∙ 5P = 10.5P. The value of Structure Y has increased 15P + 10.5P = 25.5P. 
+    |	↓ Owners	|	NFT A	|	NFS X	|	NFS Y	|	Coin P	|	Worth of owners, P	|
+    |	:--	|	:-:	|	:-:	|	:-:	|	:-:	|	:-:	|
+    |	User U	|	—	|	75%	|	—	|	25	|	66 ↗️ 81	|
+    |	User V	|	—	|	0%	|	70% ↘️ 60%	|	75 ↘️ 65	|	145 ↘️ 125	|
+    |	NFS X	|	60%	|	—	|	15% ↗️ 25%	|	40 ↗️ 50	|	58 ↗️ 78	|
+    |	NFS Y	|	5%	|	—	|	—	|	50	|	50	|
+    |	Others market	|	35%	|	25%	|	15%	|	—	|	31 ↗️ 36	|
+    |	Check sum ∑	|	100%	|	100%	|	100%	|	—	|	—	|
+    |	Value without coins, P	|	5	|	15 ↗️ 25	|	50	|	—	|	—	|
+    |	Coins, P	|	—	|	50	|	50	|	—	|	—	|
+    |	Value with coins, P	|	5	|	55 ↗️ 75	|	100	|	190	|	350 ↗️ 370	|
+
+
+
+    Total Value transferred from User V to Structure Y equals 10 Coins P + 10% of NFS Y * valueOf(Y) = 10P + 10% ∙ 100P = 20P. The value of Structure X has increased from 55P to 75P.  
     
-    Hence we must increase the value of User V by 10.5P by transferring corresponding amount of shares of Structure Y to User V. However, Structure Y doesn't have any treasury stocks on balance, hence it must create it. 
+    Hence we must increase the value of User V by 20P by transferring corresponding amount of shares of Structure X to User V. 
     
-    We follow the same procedure as in the previous case to increase treasury shares. After the trasnaction is complete 10.5P/25.5P = 41% of Structure Y should belong to User V. Lets create 41% treasury shares in Structure Y. This transaction doesn't change the value.   
+    After the transaction is finalized 20P/75P = 27% of Structure X should be added to User V. This will result in dilution of other owners of Structure X shares. Dilution coefficient in this case equals to 0.73 = (100% - 27%) / (100% - 0%), where 0% — is the previous share of Structure X owned by User V. 
 
     Step 2: 
-    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|
-    |---|--:|--:|--:|--:|
-    |User U|25%|5%|**60% ∙ d = 35%** ⬇️|30|
-    |User V|0%|15%|0%|50|
-    |NFS X|55%|25%|**40% ∙ d = 24%** ⬇️|20|
-    |NFS Y|15%|45%|**0% + 41% = 41%** ⬆️|60|
-    |Others|5%|10%|0%|—|
-    |Check sum ∑|100%|100%|100%|—|
-    |Value, P|5|10|25.5|—|
+    Adding 27% of Structure X to User V and diluting the rest owners: 
 
-    *d = (100% - 41%) / 100% = 0.59*
+    |	↓ Owners	|	NFT A	|	NFS X	|	NFS Y	|	Coin P	|	Worth of owners, P	|
+    |	:--	|	:-:	|	:-:	|	:-:	|	:-:	|	:-:	|
+    |	User U	|	—	|	75% ↘️ 55% ✅	|	—	|	25	|	66 ↗️ 81 ↘️ 55 ✅	|
+    |	User V	|	—	|	0% ↗️ 27% ✅	|	70% ↘️ 60%	|	75 ↘️ 65	|	145 ↘️ 125 ↗️ 140 ✅	|
+    |	NFS X	|	60%	|	—	|	15% ↗️ 25%	|	40 ↗️ 50	|	58 ↗️ 78	|
+    |	NFS Y	|	5%	|	—	|	—	|	50	|	50	|
+    |	Others market	|	35%	|	25% ↘️ 18% ✅	|	15%	|	—	|	31 ↗️ 36 ↘️ 27 ✅	|
+    |	Check sum ∑	|	100%	|	100%	|	100%	|	—	|	—	|
+    |	Value without coins, P	|	5	|	15 ↗️ 25	|	50	|	—	|	—	|
+    |	Coins, P	|	—	|	50	|	50	|	—	|	—	|
+    |	Value with coins, P	|	5	|	55 ↗️ 75	|	100	|	190	|	350 ↗️ 370 ↘️ 350 ✅	|
 
-    Having created 41% of treasury shares with value of 10.5P, we can now finalise the transaction my moving those shares on the balance of the original giver — User V. 
+    Note, that the total worth of owners doesn't need to match with the total value of assets, because their composition is different.   
 
-    Step 3: 
-    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|
-    |---|--:|--:|--:|--:|
-    |User U|25%|5%|18%|30|
-    |User V|0%|15%|**0% + 41% = 41%** ⬆️|50|
-    |NFS X|55%|25%|12%|20|
-    |NFS Y|15%|45%|**41% - 41% = 0** ⬇️|60|
-    |Others|5%|10%|0%|—|
-    |Check sum ∑|100%|100%|100%|—|
-    |Value, P|5|10|25.5|—|
+    ↗️ — increased, ↘️ — decreased, ✅ — new in step 2. 
 
-
-    Overall the whole trasnaction is represented in this table: 
-    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|
-    |---|--:|--:|--:|--:|
-    |User U|25%|5%|**60% ∙ d = 35%** ⬇️|30|
-    |User V|**10% - 10% = 0%** ⬇️|15%|**0% + 41% = 41%** ⬆️|**60 - 10 = 50** ⬇️|
-    |NFS X|55%|25%|**40% ∙ d = 24%** ⬇️|20|
-    |NFS Y|**5% + 10% = 15%** ⬆️|45%|**0% + 41% - 41% = 0%** ➡️|**50 + 10 = 60** ⬆️|
-    |Others|5%|10%|0%|—|
-    |Check sum ∑|100%|100%|100%|—|
-    |Value, P|5|10|**15 + 10.5 = 25.5**|—|
 
 
 
