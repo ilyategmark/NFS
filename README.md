@@ -160,26 +160,38 @@ authorOfRequest(req: requestId): await Principal
 
 > NFS is mutable and can be changed in several ways.
 
-|Owners ↓|NFT A|NFT B|NFT C|NFS X|NFS Y|NFS Z|Coin P|Coin Q|Coin R|
-|:-:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-|User U|25%|0%|25%|10%|25%|20%|30|9000|1 000 000|
-|User V|0%|15%|5%|15%|20%|15%|60|6000|2 000 000|
-|User W|10%|10%|30%|25%|15%|0%|10|3000|4 000 000|
-|NFS X|55%|25%|20%|25%|30%|10%|20|4000|3 000 000|
-|NFS Y|0%|30%|20%|25%|0%|40%|50|6000|5 000 000|
-|NFS Z|10%|20%|0%|0%|10%|15%|90|8000|8 000 000|
-|∑|100%|100%|100%|100%|100%|100%|—|—|—|
+|Owners ↓|NFT A|NFS X|NFS Y|Coin P|
+|---|--:|--:|--:|--:|
+|User U|25%|5%|55%|3000|
+|User V|10%|15%|5%|6000|
+|NFS X|55%|25%|40%|2000|
+|NFS Y|10%|55%|0%|5000|
+|∑|100%|100%|100%|—|
+
 
 Here are what changes are valid:
 
-1. Obviously, User U can change how much of Structure X it owns through trade. This however doesn't change the Structure of X. 
+1. Owners may change how much of non-fungibles they own by trading their shares. This transaction doesn't affect the internal structure of the traded assets. 
+
+    For example, User U can buy 10% of NFS X from User V for 500 Coins P
+    |Owners ↓|NFT A|NFS X|NFS Y|Coin P||
+    |---|--:|--:|--:|--:|--:|
+    |User U|25%|**5% + 10% = 15%**|55%|**3000 - 500 = 2500**|U bought shares from V and paid with coins|
+    |User V|10%|**15% - 10% = 5%**|5%|**6000 + 500 = 6500**|V sold shares to U and received coins|
+    |NFS X|55%|25%|40%|2000|**← internally this Structure didn't change**|
+    |NFS Y|10%|55%|0%|5000|—|
+    |∑|100%|100%|100%|—|—|
+
+
+
+
 2. New assets may appear in the balance of Structure X, some existing assets may disappear, owned shares may change. All this happens through trades: purchases are paid from the Structure's coins balances and proceeds from selling settled in the coin balances. 
-3. Treasury shares balance may increase or decrease not affecting coins balances, because this is zero-sum transaction.
-4. User U can send belonging to her shares and/or coins directly to NFS X, so that her owner share in X to be increased.
+3. Treasury shares balance of the Structure may increase or decrease. While this transaction accordidngly changes other shares of owners in the Structure, it doesn't change their value, and coins balances of the Structure are not affected (e.g. Coins P, Q and R as shown in the table). 
+4. User U can send belonging to her shares and/or coins directly to Structure X, so that her owner share in X to be increased.
 5. User U can retrieve shares and/or coins directly from NFS X, so that her owner share in X to be decreased.
 6. Previous two operation can happen not only with direct subsidiary, but also deeper in the ownership structure. 
 
-
+ 
 User, who owns k% shares of NFS can do the following with that: 
 1. Change the structure of NFS, if own > 50%
 2. Propose to change the structure of NFS, if own < 50%
