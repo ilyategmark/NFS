@@ -171,16 +171,17 @@ authorOfRequest(req: requestId): await Principal
 Here's an example case:
 
 |	↓ Owners	|	NFT A	|	NFS X	|	NFS Y	|	Coin P	|	Worth of owners, P	|
-|	:--	|	--:	|	--:	|	--:	|	--:	|	--:	|
-|	User U	|	—	|	65%	|	—	|	30	|	65.75	|
-|	User V	|	—	|	10%	|	70%	|	70	|	145.50	|
-|	NFS X	|	60%	|	—	|	15%	|	40	|	58.00	|
-|	NFS Y	|	5%	|	—	|	—	|	50	|	50.25	|
-|	Others market	|	35%	|	25%	|	15%	|	—	|	30.50	|
+|	:--	|	:-:	|	:-:	|	:-:	|	:-:	|	:-:	|
+|	User U	|	—	|	65%	|	—	|	30	|	70	|
+|	User V	|	—	|	15%	|	55%	|	70	|	100	|
+|	NFS X	|	60%	|	—	|	30%	|	42	|	62	|
+|	NFS Y	|	35%	|	—	|	—	|	33	|	38	|
+|	Others market	|	5%	|	20%	|	15%	|	—	|	19	|
 |	Check sum ∑	|	100%	|	100%	|	100%	|	—	|	—	|
-|	Value without coins, P	|	5	|	15	|	50	|	—	|	—	|
-|	Coins, P	|	—	|	40	|	50	|	—	|	—	|
-|	Value with coins, P	|	5	|	55	|	100	|	190	|	350.00	|
+|	Value without coins, P	|	14	|	20	|	5	|	—	|	—	|
+|	Coins, P	|	—	|	42	|	33	|	—	|	—	|
+|	Value with coins, P	|	14	|	62	|	38	|	175	|	289	|
+
 
 
 
@@ -188,26 +189,22 @@ Here are what changes are valid:
 
 1. Owners may change how much of non-fungibles they own by trading their shares. This transaction doesn't affect the internal structure of the traded assets. 
 
-    For example, User U can buy 10% of NFS X from User V for 5 Coins P
+    For example, User U can buy 10% of NFS X from User V for 6 Coins P
 
-    |	↓ Owners	|	NFT A	|	NFS X	|	NFS Y	|	Coin P	|	Worth of owners, P	|
-    |	:--	|	--:	|	--:	|	--:	|	--:	|	--:	|
-    |	User U	|	—	|	65% ↗️ 75% 	|	—	|	30 ↘️ 25	|	66.25 ⬆️	|
-    |	User V	|	—	|	10% ↘️ 0%	|	70%	|	70 ↗️ 75 	|	145 ⬇️	|
-    |	NFS X	|	60% ➡️	|	—	|	15% ➡️	|	40 ➡️	|	58.00	|
-    |	NFS Y	|	5%	|	—	|	—	|	50	|	50.25	|
-    |	Others market	|	35%	|	25%	|	15%	|	—	|	30.50	|
-    |	Check sum ∑	|	100%	|	100%	|	100%	|	—	|	—	|
-    |	Value without coins, P	|	5	|	15	|	50	|	—	|	—	|
-    |	Coins, P	|	—	|	40	|	50	|	—	|	—	|
-    |	Value with coins, P	|	5	|	55	|	100	|	190	|	350.00	|
-
-    
-     ↗️ — increased, ↘️ — decreased, ➡️ — didn't change.
+|	↓ Owners	|	NFT A	|	NFS X	|	NFS Y	|	Coin P	|	Worth of owners, P	|
+|	:--	|	:-:	|	:-:	|	:-:	|	:-:	|	:-:	|
+|	User U	|	—	|	**75%**	|	—	|	**24**	|	71	|
+|	User V	|	—	|	**5%**	|	55%	|	**76**	|	100	|
+|	NFS X	|	60%	|	—	|	30%	|	42	|	62	|
+|	NFS Y	|	35%	|	—	|	—	|	33	|	38	|
+|	Others market	|	5%	|	20%	|	15%	|	—	|	19	|
+|	Check sum ∑	|	100%	|	100%	|	100%	|	—	|	—	|
+|	Value without coins, P	|	14	|	20	|	5	|	—	|	—	|
+|	Coins, P	|	—	|	42	|	33	|	—	|	—	|
+|	Value with coins, P	|	14	|	62	|	38	|	175	|	289	|
 
 
-
-2. User can send belonging to her shares and/or coins directly to Structure, in order to increase her owner share in a Structure.
+1. User can send belonging to her shares and/or coins directly to Structure, in order to increase her owner share in a Structure.
    
     For example, User V sends to the Structure X 10 Coins P and 10% of NFS Y, belonging to her. This transaction changes the internal structure of X, increasing it's total value. 
    
@@ -215,52 +212,42 @@ Here are what changes are valid:
 
     |	↓ Owners	|	NFT A	|	NFS X	|	NFS Y	|	Coin P	|	Worth of owners, P	|
     |	:--	|	:-:	|	:-:	|	:-:	|	:-:	|	:-:	|
-    |	User U	|	—	|	75%	|	—	|	25	|	66 ↗️ 81	|
-    |	User V	|	—	|	0%	|	70% ↘️ 60%	|	75 ↘️ 65	|	145 ↘️ 125	|
-    |	NFS X	|	60%	|	—	|	15% ↗️ 25%	|	40 ↗️ 50	|	58 ↗️ 78	|
-    |	NFS Y	|	5%	|	—	|	—	|	50	|	50	|
-    |	Others market	|	35%	|	25%	|	15%	|	—	|	31 ↗️ 36	|
+    |	User U	|	—	|	75%	|	—	|	24	|	**81**	|
+    |	User V	|	—	|	5%	|	**45%**	|	**66**	|	**87**	|
+    |	NFS X	|	60%	|	—	|	**40%**	|	**52**	|	**76**	|
+    |	NFS Y	|	35%	|	—	|	—	|	33	|	38	|
+    |	Others market	|	5%	|	20%	|	15%	|	—	|	**22**	|
     |	Check sum ∑	|	100%	|	100%	|	100%	|	—	|	—	|
-    |	Value without coins, P	|	5	|	15 ↗️ 25	|	50	|	—	|	—	|
-    |	Coins, P	|	—	|	50	|	50	|	—	|	—	|
-    |	Value with coins, P	|	5	|	55 ↗️ 75	|	100	|	190	|	350 ↗️ 370	|
+    |	Value without coins, P	|	14	|	**24**	|	5	|	—	|	—	|
+    |	Coins, P	|	—	|	**52**	|	33	|	—	|	—	|
+    |	Value with coins, P	|	14	|	**76**	|	38	|	175	|	303	|
 
 
-
-    Total Value transferred from User V to Structure Y equals 10 Coins P + 10% of NFS Y * valueOf(Y) = 10P + 10% ∙ 100P = 20P. The value of Structure X has increased from 55P to 75P.  
+    Total Value transferred from User V to Structure Y equals 10 Coins P + 10% of NFS Y * valueOf(Y) = 10P + 10% ∙ 38P = 14P. The value of Structure X has increased from 62P to 76P.  
     
-    Hence we must increase the value of User V by 20P by transferring corresponding amount of shares of Structure X to User V. 
+    Hence we must increase the value of User V by 14P by transferring corresponding amount of shares of Structure X to User V. 
     
-    After the transaction is finalized 20P/75P = 27% of Structure X should be added to User V. This will result in dilution of other owners of Structure X shares. Dilution coefficient in this case equals to 0.73 = (100% - 27%) / (100% - 0%), where 0% — is the previous share of Structure X owned by User V. 
+    After the transaction is finalized 14P/76P = 18% of Structure X should be added to User V. This will result in dilution of other owners of Structure X shares. Dilution coefficient in this case equals to 0.81 = (100% - 18% - 5%) / (100% - 5%), where 5% — is the previous share of Structure X owned by User V. 
 
     Step 2: 
-    Adding 27% of Structure X to User V and diluting the rest owners: 
+    Adding 18% of Structure X to User V and diluting the rest owners: 
 
     |	↓ Owners	|	NFT A	|	NFS X	|	NFS Y	|	Coin P	|	Worth of owners, P	|
     |	:--	|	:-:	|	:-:	|	:-:	|	:-:	|	:-:	|
-    |	User U	|	—	|	75% ↘️ 55% ✅	|	—	|	25	|	66 ↗️ 81 ↘️ 55 ✅	|
-    |	User V	|	—	|	0% ↗️ 27% ✅	|	70% ↘️ 60%	|	75 ↘️ 65	|	145 ↘️ 125 ↗️ 140 ✅	|
-    |	NFS X	|	60%	|	—	|	15% ↗️ 25%	|	40 ↗️ 50	|	58 ↗️ 78	|
-    |	NFS Y	|	5%	|	—	|	—	|	50	|	50	|
-    |	Others market	|	35%	|	25% ↘️ 18% ✅	|	15%	|	—	|	31 ↗️ 36 ↘️ 27 ✅	|
+    |	User U	|	—	|	**61%**	|	—	|	24	|	**70**	|
+    |	User V	|	—	|	**23%**	|	45%	|	66	|	**101**	|
+    |	NFS X	|	60%	|	—	|	40%	|	52	|	76	|
+    |	NFS Y	|	35%	|	—	|	—	|	33	|	38	|
+    |	Others market	|	5%	|	**16%**	|	15%	|	—	|	**19**	|
     |	Check sum ∑	|	100%	|	100%	|	100%	|	—	|	—	|
-    |	Value without coins, P	|	5	|	15 ↗️ 25	|	50	|	—	|	—	|
-    |	Coins, P	|	—	|	50	|	50	|	—	|	—	|
-    |	Value with coins, P	|	5	|	55 ↗️ 75	|	100	|	190	|	350 ↗️ 370 ↘️ 350 ✅	|
-
-    Note, that the total worth of owners doesn't need to match with the total value of assets, because their composition is different.   
-
-    ↗️ — increased, ↘️ — decreased, ✅ — new in step 2. 
-
-
-
-
-
+    |	Value without coins, P	|	14	|	24	|	5	|	—	|	—	|
+    |	Coins, P	|	—	|	52	|	33	|	—	|	—	|
+    |	Value with coins, P	|	14	|	76	|	38	|	175	|	**303**	|
 
 
    
-3. User U can retrieve shares and/or coins directly from NFS X, so that her owner share in X to be decreased.
-4. Previous two operation can happen not only with direct subsidiary, but also deeper in the ownership structure. 
+2. User U can retrieve shares and/or coins directly from NFS X, so that her owner share in X to be decreased.
+3. Previous two operation can happen not only with direct subsidiary, but also deeper in the ownership structure. 
 
  
 User, who owns k% shares of NFS can do the following with that: 
