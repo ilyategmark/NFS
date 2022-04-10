@@ -176,9 +176,9 @@ Here are what changes are valid:
     For example, User U can buy 10% of NFS X from User V for 5 Coins P
     |Owners ↓|NFT A|NFS X|NFS Y|Coin P||
     |---|--:|--:|--:|--:|--:|
-    |User U|25%|**5% + 10% = 15%**|55%|**30 - 5 = 25**|U bought shares from V and paid with coins|
-    |User V|10%|**15% - 10% = 5%**|5%|**60 + 5 = 65**|V sold shares to U and received coins|
-    |NFS X|55%|25%|40%|20|**← internally this Structure didn't change**|
+    |User U|25%|**5% + 10% = 15%**|55%|**30 - 5 = 25**|U bought shares from V \ and paid with coins|
+    |User V|10%|**15% - 10% = 5%**|5%|**60 + 5 = 65**|V sold shares to U \ and received coins|
+    |NFS X|55%|25%|40%|20|**← internally this \ Structure didn't change**|
     |NFS Y|10%|55%|0%|50|—|
     |∑|100%|100%|100%|—|—|
 
