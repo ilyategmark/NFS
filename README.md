@@ -160,13 +160,15 @@ authorOfRequest(req: requestId): await Principal
 
 > NFS is mutable and can be changed in several ways.
 
-|Owners ↓|NFT A|NFS X|NFS Y|Coin P|
-|---|--:|--:|--:|--:|
-|User U|25%|5%|55%|30|
-|User V|10%|15%|5%|60|
-|NFS X|55%|25%|40%|20|
-|NFS Y|10%|55%|0%|50|
-|∑|100%|100%|100%|—|
+|Owners ↓|NFT A|NFS X|NFS Y|Coin P|Worth of owners|
+|---|--:|--:|--:|--:|--:|
+|User U|25%|5%|60%|30|tbd|
+|User V|10%|15%|0%|60|tbd|
+|NFS X|55%|25%|40%|20|tbd|
+|NFS Y|5%|45%|0%|50|tbd|
+|Others|5%|10%|0%|—|tbd|
+|Check sum ∑|100%|100%|100%|—|tbd|
+|Value of assets, P|5|10|15|160|tbd|
 
 
 Here are what changes are valid:
@@ -174,20 +176,112 @@ Here are what changes are valid:
 1. Owners may change how much of non-fungibles they own by trading their shares. This transaction doesn't affect the internal structure of the traded assets. 
 
     For example, User U can buy 10% of NFS X from User V for 5 Coins P
-    |Owners ↓|NFT A|NFS X|NFS Y|Coin P||
+    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|What's happening|
     |---|--:|--:|--:|--:|--:|
-    |User U|25%|**5% + 10% = 15%**|55%|**30 - 5 = 25**|U bought shares <br> of X from V and <br> paid with coins|
-    |User V|10%|**15% - 10% = 5%**|5%|**60 + 5 = 65**|V sold shares <br> of X to U and <br> received coins|
+    |User U|25%|**5% + 10% = 15%**|60%|**30 - 5 = 25**|U bought shares <br> of X from V and <br> paid with coins|
+    |User V|10%|**15% - 10% = 5%**|0%|**60 + 5 = 65**|V sold shares <br> of X to U and <br> received coins|
     |NFS X|55%|25%|40%|20|**internally <br>← this Structure <br> didn't change**|
-    |NFS Y|10%|55%|0%|50|—|
-    |∑|100%|100%|100%|—|—|
-
-
+    |NFS Y|5%|45%|0%|50|
+    |Others|5%|10%|0%|—|
+    |Check sum ∑|100%|100%|100%|—||
+    |Value of assets, P|5|10|15|160|
 
 
 2. New assets may appear in the balance of Structure X, some existing assets may disappear, owned shares may change. All this happens through trades: purchases are paid from the Structure's coins balances and proceeds from selling settled in the coin balances. 
-3. Treasury shares balance of the Structure may increase or decrease. While this transaction accordidngly changes other shares of owners in the Structure, it doesn't change their value, and coins balances of the Structure are not affected (e.g. Coins P, Q and R as shown in the table). 
-4. User U can send belonging to her shares and/or coins directly to Structure X, so that her owner share in X to be increased.
+
+    For example, NFS Y can buy 10% of NFT B from the market for 10 Coins P. This also means we value 100% of NFT B at 100 Coins P.
+    |Owners ↓|NFT A|NFT B|NFS X|NFS Y|Coin P|
+    |---|--:|--:|--:|--:|--:|
+    |User U|25%||5%|60%|30|
+    |User V|10%||15%|0%|60|
+    |NFS X|55%||25%|40%|20|
+    |NFS Y|5%|**0% + 10% = 10%**|45%|0%|**50 - 10 = 40**|
+    |Others|5%|90%|10%|0%|—|
+    |Check sum ∑|100%|100%|100%|100%|—|
+    |Value of assets, P|5|**100**|10|15|**150**|
+
+
+
+3. Treasury shares balance of the Structure may increase or decrease. While this transaction accordidngly changes other shares of owners in the Structure, it doesn't change their value, and coins balances of the Structure are not affected. 
+
+    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|
+    |---|--:|--:|--:|--:|
+    |User U|25%|5% ∙ d = 5.7% ⬆️|60%|30|
+    |User V|10%|15% ∙ d = 17% ⬆️|0%|60|
+    |NFS X|55%|**25% - 10% = 15%** ⬇️|40%|20|
+    |NFS Y|5%|45% ∙ d = 51% ⬆️|0%|50|
+    |Others|5%|10% ∙ d = 11.3% ⬆️|0%|—|
+    |Check sum ∑|100%|100%|100%|—|
+    |Value of assets, P|5|10|15|160|
+
+    *d = (100% - 15%) / (100% - 25%) = 85%/75% = 1.133*
+
+
+4. User can send belonging to her shares and/or coins directly to Structure, in order to increase her owner share in a Structure.
+   
+    For example, User V didn't have any share in Structure Y (which is equivalent to having 0% share). She sends to the Structure Y 10 Coins P and 10% of NFT A, belonging to her. This transaction changes the internal structure of Y, increasing it's total value. 
+   
+    Step 1:
+    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|
+    |---|--:|--:|--:|--:|
+    |User U|25%|5%|60%|30|
+    |User V|**10% - 10% = 0%** ⬇️|15%|0%|**60 - 10 = 50** ⬇️|
+    |NFS X|55%|25%|40%|20|
+    |NFS Y|**5% + 10% = 15%** ⬆️|45%|0%|**50 + 10 = 60** ⬆️|
+    |Others|5%|10%|0%|—|
+    |Check sum ∑|100%|100%|100%|—|
+    |Value of assets, P|5|10|**15 + 10.5 = 25.5** ⬆️|160|
+
+    Total Value transferred from User V to Structure Y equals 10 Coins P + 10% of NFT A * valueOf(A) = 10P + 10% ∙ 5P = 10.5P. The value of Structure Y has increased 15P + 10.5P = 25.5P. 
+    
+    Hence we must increase the value of User V by 10.5P by transferring corresponding amount of shares of Structure Y to User V. However, Structure Y doesn't have any treasury stocks on balance, hence it must create it. 
+    
+    We follow the same procedure as in the previous case to increase treasury shares. After the trasnaction is complete 10.5P/25.5P = 41% of Structure Y should belong to User V. Lets create 41% treasury shares in Structure Y. This transaction doesn't change the value.   
+
+    Step 2: 
+    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|
+    |---|--:|--:|--:|--:|
+    |User U|25%|5%|**60% ∙ d = 35%** ⬇️|30|
+    |User V|0%|15%|0%|50|
+    |NFS X|55%|25%|**40% ∙ d = 24%** ⬇️|20|
+    |NFS Y|15%|45%|**0% + 41% = 41%** ⬆️|60|
+    |Others|5%|10%|0%|—|
+    |Check sum ∑|100%|100%|100%|—|
+    |Value of assets, P|5|10|25.5|160|
+
+    *d = (100% - 41%) / 100% = 0.59*
+
+    Having created 41% of treasury shares with value of 10.5P, we can now finalise the transaction my moving those shares on the balance of the original giver — User V. 
+
+    Step 3: 
+    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|
+    |---|--:|--:|--:|--:|
+    |User U|25%|5%|18%|30|
+    |User V|0%|15%|**0% + 41% = 41%** ⬆️|50|
+    |NFS X|55%|25%|12%|20|
+    |NFS Y|15%|45%|**41% - 41% = 0** ⬇️|60|
+    |Others|5%|10%|0%|—|
+    |Check sum ∑|100%|100%|100%|—|
+    |Value of assets, P|5|10|25.5|1|
+
+
+    Overall the whole trasnaction is represented in this table: 
+    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|
+    |---|--:|--:|--:|--:|
+    |User U|25%|5%|**60% ∙ d = 35%** ⬇️|30|
+    |User V|**10% - 10% = 0%** ⬇️|15%|**0% + 41% = 41%** ⬆️|**60 - 10 = 50** ⬇️|
+    |NFS X|55%|25%|**40% ∙ d = 24%** ⬇️|20|
+    |NFS Y|**5% + 10% = 15%** ⬆️|45%|**0% + 41% - 41% = 0%** ➡️|**50 + 10 = 60** ⬆️|
+    |Others|5%|10%|0%|—|
+    |Check sum ∑|100%|100%|100%|—|
+    |Value of assets, P|5|10|**15 + 10.5 = 25.5**|1|
+
+
+
+
+
+
+   
 5. User U can retrieve shares and/or coins directly from NFS X, so that her owner share in X to be decreased.
 6. Previous two operation can happen not only with direct subsidiary, but also deeper in the ownership structure. 
 
