@@ -183,8 +183,6 @@ Here's an example case:
 |	Value with coins, P	|	14	|	62	|	38	|	175	|	289	|
 
 
-
-
 Here are what changes are valid:
 
 1. Owners may change how much of non-fungibles they own by trading their shares. This transaction doesn't affect the internal structure of the traded assets. 
@@ -204,7 +202,7 @@ Here are what changes are valid:
 |	Value with coins, P	|	14	|	62	|	38	|	175	|	289	|
 
 
-1. User can send belonging to her shares and/or coins directly to Structure, in order to increase her owner share in a Structure.
+2. User can send belonging to her shares and/or coins directly to Structure, in order to increase her owner share in a Structure. 
    
     For example, User V sends to the Structure X 10 Coins P and 10% of NFS Y, belonging to her. This transaction changes the internal structure of X, increasing it's total value. 
    
@@ -220,7 +218,7 @@ Here are what changes are valid:
     |	Check sum ∑	|	100%	|	100%	|	100%	|	—	|	—	|
     |	Value without coins, P	|	14	|	**24**	|	5	|	—	|	—	|
     |	Coins, P	|	—	|	**52**	|	33	|	—	|	—	|
-    |	Value with coins, P	|	14	|	**76**	|	38	|	175	|	303	|
+    |	Value with coins, P	|	14	|	**76**	|	38	|	175	|	**303**	|
 
 
     Total Value transferred from User V to Structure Y equals 10 Coins P + 10% of NFS Y * valueOf(Y) = 10P + 10% ∙ 38P = 14P. The value of Structure X has increased from 62P to 76P.  
@@ -242,29 +240,15 @@ Here are what changes are valid:
     |	Check sum ∑	|	100%	|	100%	|	100%	|	—	|	—	|
     |	Value without coins, P	|	14	|	24	|	5	|	—	|	—	|
     |	Coins, P	|	—	|	52	|	33	|	—	|	—	|
-    |	Value with coins, P	|	14	|	76	|	38	|	175	|	**303**	|
+    |	Value with coins, P	|	14	|	76	|	38	|	175	|	303	|
 
 
    
-2. User U can retrieve shares and/or coins directly from NFS X, so that her owner share in X to be decreased.
-3. Previous two operation can happen not only with direct subsidiary, but also deeper in the ownership structure. 
+3. User U can retrieve shares and/or coins directly from NFS X, so that her owner share in X to be decreased. This case is the opposite of the previous case. 
 
- 
-User, who owns k% shares of NFS can do the following with that: 
-1. Change the structure of NFS, if own > 50%
-2. Propose to change the structure of NFS, if own < 50%
-3. Vote on proposals of other coowners
+4. Previous two operation can happen not only with direct subsidiary, but also deeper in the ownership structure. 
 
-To ensure that we enumerate all possible variants of what an owner could do with the owned asset, lets take a look at the ownership table, particularly at the user U, and assets X and A. 
-
-
-
-User U owns 25% of NFT A and 10% of Structure X, which in turn contains 55% of NFT A. Besides that, 25% of Structure X belongs to itself (this is called Treasury Shares in finance https://www.investopedia.com/terms/t/treasurystock.asp). Also, Structure X contains some shares of non-fungibles B, C, X, Y and Z.  
-So, User U can: 
-1. Buy or sell shares of X at own will, without asking for anyone's approval or requesting anyone's vote.
-2. Propose to vote on motion to increase/decrease the treasury shares of X. Treasury shares of X can't participate in the vote. Since treasury shares account for 25% of Structure X shareholding (see intersection of row X and column X), then for this motion to succeed it should get more than 37.5% of votes ( 37.5% = (100% - 25%) / 2 ). If the motion suceeds, then the size of treasury share is changed, and the rest owners gain or lose share of Structure X proportionaly, so that the sum of Structure X shares remains equal to 100%. 
-3. Propose to vote on motion for Structure X to buy or sell shares of assets. Treasury shares of X can't participate in the vote, so for this motion to succeed it should get more than 37.5% of votes. If this motion suceeds, then Structure X buys or sells assets. Structure X uses it's own currency wallet balances to pay for purchases and/or receives proceeds from selling the assets to the Structure X wallet. Here we for the first time encounter the need for the NFS to have their own currency balances and hence own wallets.  
-4. Propose to vote on motion for some Structure, which belong to Structure X to change its compositon
+5. Owner may request the Structure to buy or sell shares of assets. Structure uses it's own currency wallet balance to pay for purchases and/or receives proceeds from selling the assets to the Structure's wallet. 
 
 
 
@@ -281,14 +265,8 @@ So, User U can:
 ```
 
 
-### Principle 5
-> State of Structure can change in the following ways
 
-### Principle 6
-> The following changes of state require vote from the owners
-
-
-### Principle 5
+### Principle 9
 > As long as user owns > 50% of an asset, it can solely make transactions. If user owns <= 50% of an asset, they can propose transaction for a vote with specified deadline, which waits until it reaches > 50% support. User may terminate the proposal before the trasnaction happened. User may vote to agree with the proposal. User may see the proposals of others and the support they gathered. Users may ask the voting be either anonymous or not.
 
 ```motoko
@@ -301,11 +279,8 @@ public shared(msg) func transferFrom(from : Principal, to : Principal, tokenId :
 
 
 
-### Principle 7
-> While Plain NFTs are immutable, the Structured NFTs can change over time: new NFTs can be added, some NFTs can be removed, the share of NFT which belongs to the Structured NFT can change. 
-
-### Principle 8
-> Structuredd NFTs are created with charter, which addresses fundamental questions of Structured NFT lifecycle: 
+### Principle 10
+> Non-Fungible Structures are created with charter, which addresses fundamental questions of NFS lifecycle: 
 1. Approval vote level (k%) required to make changes to charter
 2. Approval vote level (k%) required to change the holders of the Structured NFT
 3. Approval vote level (k%) required to change the structure of NFT
@@ -315,30 +290,24 @@ public shared(msg) func transferFrom(from : Principal, to : Principal, tokenId :
 7. Approval vote level (k%) required to destroy the Structured NFT
 8. What happens to shares of NFTs, owned by sNFT, after sNFT is destroyed (burned, transferred to the owners of destroyed sNFT)
 
-### Principle 9
-> Structured NFTs can be destroyed
-
-### Principle 10
-> Shares of Structured NFTs can be sold
-
 ### Principle 11
-> Only Users are conscious to vote and make decisions. If a vote from sNFTs is required, then it's elevated up the ownership graph until Users are found.  
-> requestForVote received by sNFT is propagated further up to the owners of sNFT
+> Non-Fungible Structures can be destroyed
+
+
 
 ### Principle 12
-> sNFT can possess own shares directly or indirectly through another intermediary sNFTs. The final beneficiary of the NFT doesn't have to be User at all, it can be sNFTs as well. 
-
+> Only Users are conscious to vote and make decisions. If a vote from NFS is required, then it's elevated up the ownership graph until Users are found. requestForVote received by NFS is propagated further up to the Users 
 
 ### Principle 13
-> Users and sNFTs can have special voting rules, regarding any sNFT, which belongs them directly or through intermediary sNFTs. 
+> Users and NFS can have special voting rules, regarding any NFS, which belongs them directly or through intermediary NFS. 
 
 ### Principle 14
-> Users may delegate their voting rights to other Users regarding any sNFT, which belongs them directly or through intermediary sNFTs.
+> Users may delegate their voting rights to other Users regarding any NFS, which belongs them directly or through intermediary NFS.
 
 ### Principle 15
 > NFS has its own balance of coins, which allowed in this network (blockchain).
 
-Charter of sNFT may have rules,  that 
+
 
 ## Abstract
 
