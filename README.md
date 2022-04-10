@@ -157,18 +157,26 @@ authorOfRequest(req: requestId): await Principal
 ```
 
 ### Principle 6
+> NFS can't contain shares of itself or can't own shares of itself through intermediaries. Transactions, that lead to such circles will be rejected. This rule is enforced to ensure that there won't be any circle references when evaluating the price of a Structure.
+ 
+### Principle 7
+
+> In the graph of ownership the final beneficiary is always a user and never an NFS. This is to ensure that voting is always elevated to a person and is never stuck at NFS.  
+
+
+### Principle 8
 
 > NFS is mutable and can be changed in several ways.
 
-|Owners ↓|NFT A|NFS X|NFS Y|Coin P|Worth of owners|
+|Owners ↓|NFT A|NFS X|NFS Y|Coin P|Worth of owners, P|
 |---|--:|--:|--:|--:|--:|
-|User U|25%|5%|60%|30|tbd|
-|User V|10%|15%|0%|60|tbd|
-|NFS X|55%|25%|40%|20|tbd|
-|NFS Y|5%|45%|0%|50|tbd|
-|Others|5%|10%|0%|—|tbd|
-|Check sum ∑|100%|100%|100%|—|tbd|
-|Value of assets, P|5|10|15|160|tbd|
+|User U|25%|5%|60%|30|40.75|
+|User V|10%|15%|0%|60|62.00|
+|NFS X|55%|25%|40%|20|31.25|
+|NFS Y|5%|45%|0%|50|54.75|
+|Others|5%|10%|0%|—|—|
+|Check sum ∑|100%|100%|100%|—|—|
+|Value, P|5|10|15|—|188.75|
 
 
 Here are what changes are valid:
@@ -176,29 +184,31 @@ Here are what changes are valid:
 1. Owners may change how much of non-fungibles they own by trading their shares. This transaction doesn't affect the internal structure of the traded assets. 
 
     For example, User U can buy 10% of NFS X from User V for 5 Coins P
-    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|What's happening|
+    |Owners ↓|NFT A|NFS X|NFS Y|Coin P|Worth of owners, P|
     |---|--:|--:|--:|--:|--:|
-    |User U|25%|**5% + 10% = 15%**|60%|**30 - 5 = 25**|U bought shares <br> of X from V and <br> paid with coins|
-    |User V|10%|**15% - 10% = 5%**|0%|**60 + 5 = 65**|V sold shares <br> of X to U and <br> received coins|
-    |NFS X|55%|25%|40%|20|**internally <br>← this Structure <br> didn't change**|
-    |NFS Y|5%|45%|0%|50|
-    |Others|5%|10%|0%|—|
-    |Check sum ∑|100%|100%|100%|—||
-    |Value of assets, P|5|10|15|160|
+    |User U|25%|**5% + 10% = 15%** ⬆️|60%|**30 - 5 = 25** ⬇️|**40.75 - 4 = 36.75** ⬇️|
+    |User V|10%|**15% - 10% = 5%** ⬇️|0%|**60 + 5 = 65** ⬆️|**62.00 + 4 = 66.00** ⬆️|
+    |NFS X|55% ➡️|25% ➡️|40% ➡️|20 ➡️|31.25|
+    |NFS Y|5%|45%|0%|50|54.75|
+    |Others|5%|10%|0%|—|—|
+    |Check sum ∑|100%|100%|100%|—|—|
+    |Value, P|5|10|15|—|188.75 ➡️|
+    
+     ⬆️ — increased, ⬇️ — decreased, ➡️ — didn't change.
 
 
 2. New assets may appear in the balance of Structure X, some existing assets may disappear, owned shares may change. All this happens through trades: purchases are paid from the Structure's coins balances and proceeds from selling settled in the coin balances. 
 
     For example, NFS Y can buy 10% of NFT B from the market for 10 Coins P. This also means we value 100% of NFT B at 100 Coins P.
-    |Owners ↓|NFT A|NFT B|NFS X|NFS Y|Coin P|
-    |---|--:|--:|--:|--:|--:|
-    |User U|25%||5%|60%|30|
-    |User V|10%||15%|0%|60|
-    |NFS X|55%||25%|40%|20|
-    |NFS Y|5%|**0% + 10% = 10%**|45%|0%|**50 - 10 = 40**|
-    |Others|5%|90%|10%|0%|—|
-    |Check sum ∑|100%|100%|100%|100%|—|
-    |Value of assets, P|5|**100**|10|15|**150**|
+    |Owners ↓|NFT A|NFT B|NFS X|NFS Y|Coin P|Worth of owners, P|
+    |---|--:|--:|--:|--:|--:|--:|
+    |User U|25%||5%|60%|30||
+    |User V|10%||15%|0%|60||
+    |NFS X|55%||25%|40%|20||
+    |NFS Y|5%|**0% + 10% = 10%**|45%|0%|**50 - 10 = 40**||
+    |Others|5%|90%|10%|0%|—||
+    |Check sum ∑|100%|100%|100%|100%|—||
+    |Value, P|5|**100**|10|15|—||
 
 
 
@@ -212,7 +222,7 @@ Here are what changes are valid:
     |NFS Y|5%|45% ∙ d = 51% ⬆️|0%|50|
     |Others|5%|10% ∙ d = 11.3% ⬆️|0%|—|
     |Check sum ∑|100%|100%|100%|—|
-    |Value of assets, P|5|10|15|160|
+    |Value, P|5|10|15|—|
 
     *d = (100% - 15%) / (100% - 25%) = 85%/75% = 1.133*
 
@@ -230,7 +240,7 @@ Here are what changes are valid:
     |NFS Y|**5% + 10% = 15%** ⬆️|45%|0%|**50 + 10 = 60** ⬆️|
     |Others|5%|10%|0%|—|
     |Check sum ∑|100%|100%|100%|—|
-    |Value of assets, P|5|10|**15 + 10.5 = 25.5** ⬆️|160|
+    |Value, P|5|10|**15 + 10.5 = 25.5** ⬆️|—|
 
     Total Value transferred from User V to Structure Y equals 10 Coins P + 10% of NFT A * valueOf(A) = 10P + 10% ∙ 5P = 10.5P. The value of Structure Y has increased 15P + 10.5P = 25.5P. 
     
@@ -247,7 +257,7 @@ Here are what changes are valid:
     |NFS Y|15%|45%|**0% + 41% = 41%** ⬆️|60|
     |Others|5%|10%|0%|—|
     |Check sum ∑|100%|100%|100%|—|
-    |Value of assets, P|5|10|25.5|160|
+    |Value, P|5|10|25.5|—|
 
     *d = (100% - 41%) / 100% = 0.59*
 
@@ -262,7 +272,7 @@ Here are what changes are valid:
     |NFS Y|15%|45%|**41% - 41% = 0** ⬇️|60|
     |Others|5%|10%|0%|—|
     |Check sum ∑|100%|100%|100%|—|
-    |Value of assets, P|5|10|25.5|1|
+    |Value, P|5|10|25.5|—|
 
 
     Overall the whole trasnaction is represented in this table: 
@@ -274,7 +284,7 @@ Here are what changes are valid:
     |NFS Y|**5% + 10% = 15%** ⬆️|45%|**0% + 41% - 41% = 0%** ➡️|**50 + 10 = 60** ⬆️|
     |Others|5%|10%|0%|—|
     |Check sum ∑|100%|100%|100%|—|
-    |Value of assets, P|5|10|**15 + 10.5 = 25.5**|1|
+    |Value, P|5|10|**15 + 10.5 = 25.5**|—|
 
 
 
